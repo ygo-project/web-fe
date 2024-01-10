@@ -9,12 +9,12 @@ const themeModeStore = {
 		MUT_DARK_MODE: (state, payload) => {
 			localStorage.setItem('isDarkMode', String(true));
 			state.isDarkMode = true;
-			document.body.dataset.theme = 'dark';
+			document.documentElement.setAttribute('data-theme', 'dark');
 		},
 		MUT_LIGHT_MODE: (state, payload) => {
 			localStorage.setItem('isDarkMode', String(false));
 			state.isDarkMode = false;
-			document.body.dataset.theme = 'light';
+			document.documentElement.setAttribute('data-theme', 'light');
 		},
 	},
 	actions: {

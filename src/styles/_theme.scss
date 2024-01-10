@@ -1,4 +1,4 @@
-body[data-theme='light'] {
+html[data-theme='light'] {
     --bg-page1: #F8F9FA;
     --bg-page2: #FFFFFF;
     --bg-element1: #FFFFFF;
@@ -46,7 +46,7 @@ body[data-theme='light'] {
     --prism-line-number: #585c63;
 }
 
-body[data-theme='dark'] {
+html[data-theme='dark'] {
     --bg-page1: #121212;
     --bg-page2: #121212;
     --bg-element1: #1E1E1E;

@@ -6,11 +6,11 @@ const routes = [
 		name: 'root',
 		component: () => import("@/pages/RootPage.vue")
 	},
-	// {
-	// 	path: '/first',
-	// 	name: 'first',
-	// 	component: () => import("@/pages/first.vue")
-	// },
+	{
+		path: '/calculator',
+		name: 'calculator',
+		component: () => import("@/pages/CalculatorPage.vue")
+	},
 ]
 
 const router = createRouter({

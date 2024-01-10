@@ -8,7 +8,7 @@ import ThemeMode from "@/components/molecule/Header/RightHeader/ThemeMode.vue";
     </div>
 </template>
 
-<style>
+<style lang="scss">
     .right-menu-container {
         display: flex;
         align-items: center;
@@ -23,10 +23,11 @@ import ThemeMode from "@/components/molecule/Header/RightHeader/ThemeMode.vue";
             border-radius: 40px;
             color: var(--text1);
 
-            img {
+            svg {
                 width: 24px;
                 height: 24px;
                 pointer-events: none;
+                color: var(--text1);
             }
 
             &:hover {

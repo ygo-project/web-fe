@@ -2,8 +2,9 @@
     import { computed } from "vue";
     import { useStore } from "vuex";
 
-    import SunIcon from '@/assets/svgs/sun-icon.svg';
-    import MoonIcon from '@/assets/svgs/moon-icon.svg';
+    import SunIcon from '@/assets/svgs/SunIcon.vue';
+    import MoonIcon from '@/assets/svgs/MoonIcon.vue';
+    import IconBase from "@/components/atom/IconBase.vue";
 
     const store = useStore();
 
@@ -17,8 +18,10 @@
 <template>
     <div class="theme-mode-container" @click="changeTheme">
         <div class="setting-hover">
-            <img :src="SunIcon" alt="sun-icon" v-if="!isDarkMode"/>
-            <img :src="MoonIcon" alt="moon-icon" v-else />
+            <IconBase v-if="!isDarkMode"><SunIcon /></IconBase>
+            <IconBase v-else><MoonIcon /></IconBase>
+<!--            <img :src="SunIcon" alt="sun-icon" v-if="!isDarkMode"/>-->
+<!--            <img :src="MoonIcon" alt="moon-icon" v-else />-->
         </div>
     </div>
 </template>

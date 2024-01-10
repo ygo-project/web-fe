@@ -1,6 +1,7 @@
 <script setup>
   import { ref } from "vue";
   import RightHeader from "@/components/molecule/Header/RightHeader/RightHeader.vue";
+  import CenterHeader from "@/components/molecule/Header/CenterHeader/CenterHeader.vue";
 
   const headerLenderCondition = window.location.pathname === '/noheaderpageurl';
   const scrollActive = ref(false);
@@ -19,6 +20,7 @@
                         <span>YGO-LOG</span>
                     </router-link>
                 </span>
+                <CenterHeader />
                 <RightHeader />
             </div>
         </div>
