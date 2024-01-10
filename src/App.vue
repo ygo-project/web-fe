@@ -1,10 +1,11 @@
 <script setup>
+import Layout from "@/components/organism/Layout.vue";
 </script>
 
 <template>
-  <div id="root">
+  <Layout>
     <router-view></router-view>
-  </div>
+  </Layout>
 </template>
 
 <style scoped>

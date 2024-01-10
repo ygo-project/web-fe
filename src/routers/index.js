@@ -4,7 +4,7 @@ const routes = [
 	{
 		path: '/',
 		name: 'root',
-		component: () => import("@/pages/RootPage/RootPage.vue")
+		component: () => import("@/pages/RootPage.vue")
 	},
 	// {
 	// 	path: '/first',
