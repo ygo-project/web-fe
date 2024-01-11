@@ -6,6 +6,7 @@
     <div class="center-menu-container">
         <router-link class="menu" to="/">Home</router-link>
         <router-link class="menu" to="/calculator">라이프계산기</router-link>
+        <router-link class="menu" to="/rating">Rating</router-link>
     </div>
 </template>
 
