@@ -11,5 +11,11 @@ export default {
 				console.log(e);
 			})).data;
 		}
+	},
+	mounted() {
+		console.log("Mixin mounted");
+	},
+	unmounted(){
+		console.log("Mixin unmounted");
 	}
 }

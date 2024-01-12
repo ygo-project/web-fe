@@ -9,13 +9,9 @@
 			<button v-for="(tab, index) in tabs" :key="index" @click="changeTab(index)" :class="{ 'btn-primary': currentTab === index, 'btn-secondary': currentTab !== index }" class="btn">{{ tab.deck_name }}</button>
 		</div>
 		<div class="mt-3">
-			<!-- <div v-for="(tab, index) in tabs" :key="index">
-				<RatingTable :deck_name="deck_name" :deckNumber="deckNumber"/>
-			</div> -->
-			<div v-show="currentTab == 0"><RatingTable deck_name="섬도희" deckNumber="0"/></div>
-			<div v-show="currentTab == 1"><RatingTable deck_name="소환사" deckNumber="1"/></div>
-			<div v-show="currentTab == 2"><RatingTable deck_name="낙위크" deckNumber="2"/></div>
-			<div v-show="currentTab == 3"><RatingTable deck_name="빙결계" deckNumber="3"/></div>
+			<div v-for="(tab, index) in tabs" :key="index" v-show="currentTab == index">
+				<RatingTable :deck_name="tab.deck_name" :deckNumber="tab.deckNumber" ref="rating_table"/>
+			</div>
 		</div>
 	</div>
 </template>

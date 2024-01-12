@@ -47,7 +47,7 @@
 				List: []
 			};
 		},
-		mounted(){
+		created(){
 			this.getList();
 		},
 		methods: {
