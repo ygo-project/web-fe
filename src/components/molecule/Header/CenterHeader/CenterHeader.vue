@@ -5,8 +5,7 @@
 <template>
     <div class="center-menu-container">
         <router-link class="menu" to="/">Home</router-link>
-        <router-link class="menu" to="/calculator">라이프계산기</router-link>
-        <router-link class="menu" to="/rating">Rating</router-link>
+        <router-link class="menu" to="/duel">듀얼</router-link>
     </div>
 </template>
 
@@ -23,6 +22,7 @@
         color: var(--text1);
 
         &:hover {
+            background-color: var(--slight-layer);
             cursor: pointer;
         }
     }

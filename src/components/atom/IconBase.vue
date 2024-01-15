@@ -1,10 +1,10 @@
 <script>
     export default {
         props: {
-            viewBox: { type: String, default: "0 0 24 24" },
+            viewBox: { type: String, default: "0 0 16 16" },
             iconName: { type: String, default: "" },
-            width: { type: [Number, String], default: 24 },
-            height: { type: [Number, String], default: 24 },
+            width: { type: [Number, String], default: 40 },
+            height: { type: [Number, String], default: 40 },
             iconColor: { type: String, default: "currentColor" },
         }
     }
@@ -25,6 +25,5 @@
     </svg>
 </template>
 
-<style scoped>
-
+<style>
 </style>
