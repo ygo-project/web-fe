@@ -28,6 +28,8 @@ import ThemeMode from "@/components/molecule/Header/RightHeader/ThemeMode.vue";
                 height: 24px;
                 pointer-events: none;
                 color: var(--text1);
+
+                font-size: 24px;
             }
 
             &:hover {
