@@ -1,23 +1,57 @@
 <script setup>
-import {onMounted, ref} from "vue";
+    import { onMounted, ref } from "vue";
 
     import LifePoint from "@/pages/Duel/LifePointBoard/LifePoint/LifePoint.vue";
     import KeyBoard from "@/pages/Duel/LifePointBoard/Keyboard/KeyBoard.vue";
 
     const lp = ref(8000);
     const order = ref('');
+    const lpLog = [];
 
     const changeLP = (operator, amount) => {
         if (operator === '+') {
-            lp.value = lp.value + amount * 1;
+            animateLP(lp.value + amount * 1);
         }
 
         if (operator === '-') {
-            lp.value = lp.value - amount * 1;
+            animateLP(lp.value - amount * 1);
         }
 
         if (operator === '/') {
-            lp.value = lp.value / (amount * 1);
+            animateLP(lp.value / (amount * 1));
+        }
+    }
+
+    const returnLP = () => {
+        const target = lpLog.length === 0 ? 8000 : lpLog.pop();
+        animateLP(target, true);
+    }
+
+    const animateLP = (dest, log) => {
+        if (!log) lpLog.push(lp.value);
+        const diff = Math.ceil((dest - lp.value) / 33);
+
+        let time = 0;
+        for (let start = lp.value; start !== dest; start += diff) {
+            setTimeout(() => {
+                lp.value = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > dest) {
+                start = dest - diff;
+                setTimeout(() => {
+                    lp.value = dest;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < dest) {
+                start = dest - diff;
+                setTimeout(() => {
+                    lp.value = dest;
+                }, 20 * (time + 1));
+            }
+
+            time++;
         }
     }
 
@@ -36,7 +70,7 @@ import {onMounted, ref} from "vue";
 
 <template>
     <div class="lp-board-container">
-        <LifePoint :life-point="lp" :order="order" />
+        <LifePoint :life-point="lp" :order="order" :return-func="returnLP" />
         <KeyBoard :order="order" @setOrder="(nextOrd) => order = nextOrd" @run="() => runOperation()" />
     </div>
 </template>

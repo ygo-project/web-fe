@@ -25,5 +25,5 @@
     </svg>
 </template>
 
-<style>
+<style scoped>
 </style>
