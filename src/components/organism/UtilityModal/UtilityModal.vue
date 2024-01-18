@@ -3,6 +3,7 @@ import { ref } from "vue";
 import IconBase from "@/components/atom/IconBase.vue";
 import XIcon from "@/assets/svgs/XIcon.vue";
 import Dice from "@/components/organism/UtilityModal/Dice/Dice.vue";
+import Coin from "@/components/organism/UtilityModal/Coin.vue";
 
 const props = defineProps({
     closeModal: { type: Function },
@@ -13,7 +14,7 @@ const diceRolling = ref(false);
 
 const diceRoll = () => {
     diceRolling.value = true;
-    diceValue.value = Math.floor(Math.random() * 7);
+    diceValue.value = Math.floor(Math.random() * 6) + 1;
 
     setTimeout(() => {
         diceRolling.value = false;
@@ -28,7 +29,9 @@ const diceRoll = () => {
         <div class="modal-positioner">
             <div class="modal-container">
                 <div class="left-block">
-
+                    <div class="wrapper">
+                        <Coin />
+                    </div>
                 </div>
                 <div class="right-block">
                     <div class="exit" @click="closeModal">
@@ -86,6 +89,13 @@ const diceRoll = () => {
         width: 50%;
         padding: 1.5rem;
         background: var(--bg-element2);
+
+        .wrapper {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
     }
 
     .right-block {

@@ -44,8 +44,8 @@ const utilPopup = () => {
         .board-center {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: flex-end;
+            justify-content: flex-end;
+            margin-bottom: 20px;
 
             .setting-hover {
                 display: flex;
