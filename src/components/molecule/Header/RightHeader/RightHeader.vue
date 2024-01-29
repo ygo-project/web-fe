@@ -1,10 +1,18 @@
 <script setup>
 import ThemeMode from "@/components/molecule/Header/RightHeader/ThemeMode.vue";
+import YgoButton from "@/components/atom/YgoButton.vue";
+
+const props = defineProps({
+    popupModal: { type: Function },
+});
 </script>
 
 <template>
     <div class="right-menu-container">
         <ThemeMode />
+        <div>
+            <YgoButton :click-event="popupModal">유저 추가</YgoButton>
+        </div>
     </div>
 </template>
 

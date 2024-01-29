@@ -11,6 +11,11 @@ const routes = [
 		name: 'duel',
 		component: () => import("@/pages/Duel/DuelPage.vue")
 	},
+	{
+		path: '/rating',
+		name: 'rating',
+		component: () => import("@/pages/Rating/RatingPage.vue")
+	},
 ]
 
 const router = createRouter({

@@ -6,6 +6,7 @@
     <div class="center-menu-container">
         <router-link class="menu" to="/">Home</router-link>
         <router-link class="menu" to="/duel">듀얼</router-link>
+        <router-link class="menu" to="/rating">전적</router-link>
     </div>
 </template>
 
@@ -27,7 +28,7 @@
         }
     }
 
-    .menu:nth-child(2) {
+    .menu:not(:nth-child(1)) {
         margin-left: 1rem;
     }
 }

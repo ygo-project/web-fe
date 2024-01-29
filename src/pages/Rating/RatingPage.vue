@@ -1,5 +1,5 @@
 <script setup>
-	import RatingTable from '@/components/molecule/Boody/Container/RatingTable.vue'
+	import RatingTable from '@/pages/Rating/Container/RatingTable.vue'
 </script>
 
 <template>

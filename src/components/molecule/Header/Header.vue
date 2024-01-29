@@ -3,6 +3,10 @@
   import RightHeader from "@/components/molecule/Header/RightHeader/RightHeader.vue";
   import CenterHeader from "@/components/molecule/Header/CenterHeader/CenterHeader.vue";
 
+  const props = defineProps({
+      popupModal: { type: Function },
+  });
+
   const headerLenderCondition = window.location.pathname === '/noheaderpageurl';
   const scrollActive = ref(false);
 </script>
@@ -21,7 +25,7 @@
                     </router-link>
                 </span>
                 <CenterHeader />
-                <RightHeader />
+                <RightHeader :popup-modal="popupModal"/>
             </div>
         </div>
     </div>
