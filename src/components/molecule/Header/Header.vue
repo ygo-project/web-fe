@@ -7,7 +7,7 @@
       popupModal: { type: Function },
   });
 
-  const headerLenderCondition = window.location.pathname === '/noheaderpageurl';
+  const headerLenderCondition = window.location.pathname === '/registry';
   const scrollActive = ref(false);
 </script>
 

@@ -50,7 +50,7 @@
 <template>
     <div class="signup-form">
         <div class="input-wrapper">
-            <input type="text" required placeholder="아이디를 입력하세요." v-model="id" @change="chkID"/>
+            <input type="text" required placeholder="아이디를 입력하세요." v-model="id" @keyup="chkID"/>
             <YgoButton color="teal" :click-event="btnEvent">중복확인</YgoButton>
         </div>
     </div>

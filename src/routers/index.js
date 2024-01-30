@@ -16,6 +16,11 @@ const routes = [
 		name: 'rating',
 		component: () => import("@/pages/Rating/RatingPage.vue")
 	},
+	{
+		path: '/registry',
+		name: 'registry',
+		component: () => import("@/pages/Registry/RegistryPage.vue")
+	},
 ]
 
 const router = createRouter({
