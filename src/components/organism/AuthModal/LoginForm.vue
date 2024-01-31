@@ -5,6 +5,10 @@
     import { apiClient } from "@/common/index.js";
     import YgoButton from "@/components/atom/YgoButton.vue";
 
+    const props = defineProps({
+        onClose: Function,
+    });
+
     const form = ref({
         id: '',
         password: '',
@@ -12,15 +16,23 @@
 
     const onSubmit = async () => {
         const body = {
-            id: form.value.id,
-            password: form.value.password,
+            userId: form.value.id,
+            userPw: form.value.password,
         };
 
         try {
-            const response = await apiClient.post('/user/validate', body);
+            const response = await apiClient.post('/user/login', body);
 
             if (response.status === 200) {
-                console.log("login 성공")
+                const { accessToken, refreshToken } = response.data;
+
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('refreshToken', refreshToken);
+                localStorage.setItem('userId', form.value.id);
+
+                form.value.id = '';
+                form.value.password = '';
+                props.onClose();
             }
         } catch (error) {
             console.log(error);

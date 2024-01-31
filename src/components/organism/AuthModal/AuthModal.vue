@@ -42,7 +42,7 @@ const convertIsSignUp = () => {
                         <h2>로그인</h2>
                         <section>
                             <h4>기존 아이디로 로그인</h4>
-                            <LoginForm />
+                            <LoginForm :on-close="closeModal" />
                         </section>
                     </div>
                     <div class="foot" v-if="isSignUp">

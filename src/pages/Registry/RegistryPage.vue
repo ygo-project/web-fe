@@ -113,14 +113,23 @@
 
     const onRegister = async () => {
         const body = {
-            id : user_id.value,
-            password: password.value,
-            name: name.value,
+            userId : user_id.value,
+            userPw: password.value,
+            userNm: name.value,
         };
 
         try {
-            const { data } = await apiClient.post('/user/signup', body);
-            console.log(data);
+            const response = await apiClient.post('/user/signup', body);
+
+            if (response.status === 200) {
+                const { accessToken, refreshToken } = response.data;
+
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('refreshToken', refreshToken);
+                localStorage.setItem('userId', user_id.value);
+
+                await router.replace(`/`);
+            }
         } catch (error) {
             console.log(error);
         }
