@@ -11,7 +11,7 @@ const props = defineProps({
     <div class="right-menu-container">
         <ThemeMode />
         <div>
-            <YgoButton :click-event="popupModal">유저 추가</YgoButton>
+            <YgoButton :click-event="popupModal">로그인</YgoButton>
         </div>
     </div>
 </template>

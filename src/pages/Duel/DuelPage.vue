@@ -33,6 +33,7 @@ const utilPopup = () => {
 
 <style scoped>
     .duel-page-container {
+        width: 90vw;
         display: flex;
         justify-content: space-between;
         margin: 0 auto;

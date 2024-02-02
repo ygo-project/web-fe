@@ -12,6 +12,11 @@ const routes = [
 		component: () => import("@/pages/Duel/DuelPage.vue")
 	},
 	{
+		path: '/fight',
+		name: 'fight',
+		component: () => import("@/pages/Fight/FightPage.vue")
+	},
+	{
 		path: '/rating',
 		name: 'rating',
 		component: () => import("@/pages/Rating/RatingPage.vue")
