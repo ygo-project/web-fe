@@ -10,6 +10,7 @@ const props = defineProps({
 
 const amount = ref(5000);
 const isOverTrigger = ref(false);
+const isCriticalTrigger = ref(false);
 
 const increaseAmount = () => {
     amount.value = amount.value + 1000;
@@ -21,7 +22,23 @@ const decreaseAmount = () => {
     }
 }
 
+const increaseLarge = () => {
+    amount.value = amount.value + 5000;
+}
+
+const decreaseLarge = () => {
+    if (amount.value >= 5000) {
+        amount.value = amount.value - 5000;
+    }
+}
+
 const setPower = (idx) => {
+    if (isCriticalTrigger.value) {
+        isCriticalTrigger.value = false;
+        // 크리티컬 + 1
+        return;
+    }
+
     const now = props.fightPoint[idx];
     const pur = now + amount.value;
 
@@ -56,6 +73,10 @@ const setPower = (idx) => {
 }
 
 const setFrontPower = () => {
+    amount.value = 10000;
+    isOverTrigger.value = false;
+    isCriticalTrigger.value = false;
+
     setPower(1);
     setPower(3);
     setPower(5);
@@ -63,14 +84,23 @@ const setFrontPower = () => {
 
 const setOverTrigger = () => {
     amount.value = 100000000;
+    isCriticalTrigger.value = false;
+
     isOverTrigger.value = true;
+}
+
+const setCriticalTrigger = () => {
+    isOverTrigger.value = false;
+
+    isCriticalTrigger.value = true;
 }
 </script>
 
 <template>
     <div class="board-container">
         <FightField :fight-points="props.fightPoint" :set-power="setPower" />
-        <FightKeyboard :amount="amount" :up="increaseAmount" :down="decreaseAmount" :front="setFrontPower" :over="setOverTrigger" />
+        <FightKeyboard :amount="amount" :up="increaseAmount" :down="decreaseAmount" :large-up="increaseLarge" :large-down="decreaseLarge"
+                       :front="setFrontPower" :over="setOverTrigger" :critical="setCriticalTrigger" />
     </div>
 </template>
 

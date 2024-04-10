@@ -8,8 +8,11 @@ const props = defineProps({
     amount: Number,
     up: Function,
     down: Function,
+    largeUp: Function,
+    largeDown: Function,
     front: Function,
     over: Function,
+    critical: Function
 });
 </script>
 
@@ -18,15 +21,16 @@ const props = defineProps({
         <div class="amount-wrapper">
             <input type="text" readonly :value="amount" />
             <div>
-                <YgoButton color="darkgray" :click-event="up"><IconBase><ChevronUp /></IconBase></YgoButton>
-                <YgoButton color="darkgray" :click-event="down"><IconBase><ChevronDown /></IconBase></YgoButton>
+                <YgoButton color="darkgray" :click-event="up">＋1K</YgoButton>
+                <YgoButton color="darkgray" :click-event="down">－1K</YgoButton>
+                <YgoButton color="darkgray" :click-event="largeUp">＋5K</YgoButton>
+                <YgoButton color="darkgray" :click-event="largeDown">－5K</YgoButton>
             </div>
         </div>
         <div class="btn-wrapper">
-            <YgoButton color="darkgray" :click-event="over">오버 트리거</YgoButton>
-            <YgoButton color="darkgray" :click-event="front">전열</YgoButton>
-            <YgoButton color="darkgray">크리티컬</YgoButton>
-            <YgoButton color="darkgray">되돌리기</YgoButton>
+            <YgoButton color="darkgray" :click-event="over">옵트</YgoButton>
+            <YgoButton color="darkgray" :click-event="front">프론트</YgoButton>
+            <YgoButton color="darkgray" :click-event="critical">크리티컬</YgoButton>
         </div>
     </div>
 </template>
@@ -59,17 +63,22 @@ const props = defineProps({
             }
 
             div {
-                width: 120px;
+                width: 160px;
+
+                button {
+                    margin-top: 2px;
+                    margin-left: 2px;
+                }
             }
         }
 
         .btn-wrapper {
-            width: 270px;
+            width: 290px;
 
             button {
-                width: 120px;
-                margin-bottom: 5px;
-                margin-left: 5px;
+                width: 140px;
+                margin-top: 2px;
+                margin-left: 2px;
             }
         }
     }
