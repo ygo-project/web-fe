@@ -3,13 +3,16 @@ import Guard from "@/pages/Fight/FightBoard/FightField/Guard.vue";
 
 const props = defineProps({
     fightPoints: Array,
+    criticalPoints: Array,
     setPower: Function,
+    isUpSideDown: Boolean,
 });
 </script>
 
 <template>
     <div class="field-container">
-        <Guard v-for="(item, idx) in fightPoints" @click="setPower(idx)">{{ item }}</Guard>
+        <Guard v-for="(item, idx) in fightPoints" @click="setPower(idx)" :isVanguard="isUpSideDown ? idx === 2 : idx === 3"
+            :critical-point="criticalPoints[idx]">{{ item }}</Guard>
     </div>
 </template>
 

@@ -5,7 +5,10 @@ import FightField from "@/pages/Fight/FightBoard/FightField/FightField.vue";
 import FightKeyboard from "@/pages/Fight/FightBoard/FightKeyboard/FightKeyboard.vue";
 
 const props = defineProps({
-    fightPoint: Array,
+    fightPointDisplay: Array,
+    fightPointReal: Array,
+    criticalPoints: Array,
+    isUpSideDown: Boolean,
 });
 
 const amount = ref(5000);
@@ -36,30 +39,32 @@ const setPower = (idx) => {
     if (isCriticalTrigger.value) {
         isCriticalTrigger.value = false;
         // 크리티컬 + 1
+        props.criticalPoints[idx] += 1;
         return;
     }
 
-    const now = props.fightPoint[idx];
+    const now = props.fightPointReal[idx];
     const pur = now + amount.value;
+    props.fightPointReal[idx] = pur;
 
     const diff = Math.ceil((pur - now) / 21);
     let time = 0;
     for (let start = now; start !== pur; start += diff) {
         setTimeout(() => {
-            props.fightPoint[idx] = start;
+            props.fightPointDisplay[idx] = start;
         }, 20 * time);
 
         if (diff > 0 && start + diff > pur) {
             start = pur - diff;
             setTimeout(() => {
-                props.fightPoint[idx] = pur;
+                props.fightPointDisplay[idx] = pur;
             }, 20 * (time + 1));
         }
 
         if (diff < 0 && start + diff < pur) {
             start = pur - diff;
             setTimeout(() => {
-                props.fightPoint[idx] = pur;
+                props.fightPointDisplay[idx] = pur;
             }, 20 * (time + 1));
         }
 
@@ -77,9 +82,15 @@ const setFrontPower = () => {
     isOverTrigger.value = false;
     isCriticalTrigger.value = false;
 
-    setPower(1);
-    setPower(3);
-    setPower(5);
+    if (props.isUpSideDown) {
+        setPower(0);
+        setPower(2);
+        setPower(4);
+    } else {
+        setPower(1);
+        setPower(3);
+        setPower(5);
+    }
 }
 
 const setOverTrigger = () => {
@@ -90,6 +101,7 @@ const setOverTrigger = () => {
 }
 
 const setCriticalTrigger = () => {
+    amount.value = 10000;
     isOverTrigger.value = false;
 
     isCriticalTrigger.value = true;
@@ -98,7 +110,7 @@ const setCriticalTrigger = () => {
 
 <template>
     <div class="board-container">
-        <FightField :fight-points="props.fightPoint" :set-power="setPower" />
+        <FightField :fight-points="props.fightPointDisplay" :set-power="setPower" :is-up-side-down="isUpSideDown" :critical-points="criticalPoints" />
         <FightKeyboard :amount="amount" :up="increaseAmount" :down="decreaseAmount" :large-up="increaseLarge" :large-down="decreaseLarge"
                        :front="setFrontPower" :over="setOverTrigger" :critical="setCriticalTrigger" />
     </div>
