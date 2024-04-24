@@ -20,7 +20,7 @@
     const passwordMessage = ref('');
     const passwordConfirmMessage = ref('');
 
-    const isIDDone = ref(false);
+    const isIDDone = ref(true);
     const isNameDone = ref(false);
     const isPasswordDone = ref(false);
     const isPasswordConfirmDone = ref(false);
@@ -122,10 +122,12 @@
             const response = await apiClient.post('/user/signup', body);
 
             if (response.status === 200) {
-                const { accessToken, refreshToken } = response.data;
+                const { accessToken, refreshToken, auth } = response.data;
 
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('refreshToken', refreshToken);
+
+                await store.dispatch('ACT_AUTH', auth);
                 localStorage.setItem('userId', user_id.value);
 
                 await router.replace(`/`);

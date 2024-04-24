@@ -26,6 +26,11 @@ const routes = [
 		name: 'registry',
 		component: () => import("@/pages/Registry/RegistryPage.vue")
 	},
+	{
+		path: '/league',
+		name: 'league',
+		component: () => import("@/pages/League/LeaguePage.vue")
+	},
 ]
 
 const router = createRouter({

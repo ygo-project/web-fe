@@ -1,9 +1,12 @@
 <script setup>
     import { ref } from "vue";
+    import { useStore } from "vuex";
     import { toast } from "vue3-toastify";
 
     import { apiClient } from "@/common/index.js";
     import YgoButton from "@/components/atom/YgoButton.vue";
+
+    const store = useStore();
 
     const props = defineProps({
         onClose: Function,
@@ -24,10 +27,12 @@
             const response = await apiClient.post('/user/login', body);
 
             if (response.status === 200) {
-                const { accessToken, refreshToken } = response.data;
+                const { accessToken, refreshToken, auth } = response.data;
 
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('refreshToken', refreshToken);
+
+                await store.dispatch('ACT_AUTH', auth);
                 localStorage.setItem('userId', form.value.id);
 
                 form.value.id = '';
@@ -36,6 +41,7 @@
             }
         } catch (error) {
             console.log(error);
+            toast.error('아이디와 비밀번호가 일치하지 않습니다. 다시 한 번 확인해주세요.');
         }
     };
 </script>

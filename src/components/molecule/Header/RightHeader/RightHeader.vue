@@ -1,17 +1,36 @@
 <script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
 import ThemeMode from "@/components/molecule/Header/RightHeader/ThemeMode.vue";
 import YgoButton from "@/components/atom/YgoButton.vue";
+
+const store = useStore();
+const router = useRouter();
+
+const isLogin = computed(() => !!store.getters.GET_AUTH );
 
 const props = defineProps({
     popupModal: { type: Function },
 });
+
+const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
+    store.dispatch('ACT_AUTH', undefined);
+
+    router.replace(`/`);
+};
 </script>
 
 <template>
     <div class="right-menu-container">
         <ThemeMode />
         <div>
-            <YgoButton :click-event="popupModal">로그인</YgoButton>
+            <YgoButton v-if="!isLogin" :click-event="popupModal">로그인</YgoButton>
+            <YgoButton v-else :click-event="logout">로그아웃</YgoButton>
         </div>
     </div>
 </template>

@@ -21,7 +21,7 @@
                         class="logo"
                         to="/"
                     >
-                        <span>YGO-LOG</span>
+                        <span>JDU-LOG</span>
                     </router-link>
                 </span>
                 <CenterHeader />
