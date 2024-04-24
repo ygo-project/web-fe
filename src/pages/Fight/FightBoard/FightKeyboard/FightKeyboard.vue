@@ -12,7 +12,8 @@ const props = defineProps({
     largeDown: Function,
     front: Function,
     over: Function,
-    critical: Function
+    critical: Function,
+    cancel: Function,
 });
 </script>
 
@@ -31,6 +32,7 @@ const props = defineProps({
             <YgoButton color="darkgray" :click-event="over">옵트</YgoButton>
             <YgoButton color="darkgray" :click-event="front">프론트</YgoButton>
             <YgoButton color="darkgray" :click-event="critical">크리티컬</YgoButton>
+            <YgoButton color="darkgray" :click-event="cancel">취소</YgoButton>
         </div>
     </div>
 </template>

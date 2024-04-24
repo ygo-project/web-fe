@@ -8,12 +8,15 @@ const props = defineProps({
     fightPointDisplay: Array,
     fightPointReal: Array,
     criticalPoints: Array,
+    log: Array,
     isUpSideDown: Boolean,
 });
 
 const amount = ref(5000);
 const isOverTrigger = ref(false);
+const isFrontTrigger = ref(false);
 const isCriticalTrigger = ref(false);
+const isCancel = ref(false);
 
 const increaseAmount = () => {
     amount.value = amount.value + 1000;
@@ -40,12 +43,25 @@ const setPower = (idx) => {
         isCriticalTrigger.value = false;
         // 크리티컬 + 1
         props.criticalPoints[idx] += 1;
+        props.log.push({
+            idx: idx,
+            trigger: 'critical',
+            amount: 1,
+        });
         return;
     }
 
     const now = props.fightPointReal[idx];
     const pur = now + amount.value;
     props.fightPointReal[idx] = pur;
+
+    if (!isCancel.value && !isFrontTrigger.value) {
+        props.log.push({
+            idx: idx,
+            trigger: 'power',
+            amount: amount.value,
+        });
+    }
 
     const diff = Math.ceil((pur - now) / 21);
     let time = 0;
@@ -81,6 +97,7 @@ const setFrontPower = () => {
     amount.value = 10000;
     isOverTrigger.value = false;
     isCriticalTrigger.value = false;
+    isFrontTrigger.value = true;
 
     if (props.isUpSideDown) {
         setPower(0);
@@ -91,10 +108,18 @@ const setFrontPower = () => {
         setPower(3);
         setPower(5);
     }
+
+    props.log.push({
+        idx: -1,
+        trigger: 'front',
+        amount: props.isUpSideDown ? 1 : -1,
+    });
+    isFrontTrigger.value = false;
 }
 
 const setOverTrigger = () => {
     amount.value = 100000000;
+    isFrontTrigger.value = false;
     isCriticalTrigger.value = false;
 
     isOverTrigger.value = true;
@@ -102,9 +127,42 @@ const setOverTrigger = () => {
 
 const setCriticalTrigger = () => {
     amount.value = 10000;
+    isFrontTrigger.value = false;
     isOverTrigger.value = false;
 
     isCriticalTrigger.value = true;
+}
+
+const cancelLastSetting = () => {
+    if (props.log.length === 0) return;
+
+    let lastLog = props.log.pop(); // idx, trigger, amount
+
+    if (lastLog.trigger === 'front') {
+        let tmp = amount.value;
+        isCancel.value = true;
+        amount.value = -10000;
+        if (lastLog.amount > 0) {
+            setPower(0);
+            setPower(2);
+            setPower(4);
+        } else {
+            setPower(1);
+            setPower(3);
+            setPower(5);
+        }
+        amount.value = tmp;
+        isCancel.value = false;
+    } else if (lastLog.trigger === 'critical'){
+        props.criticalPoints[lastLog.idx] -= 1;
+    } else {
+        let tmp = amount.value;
+        isCancel.value = true;
+        amount.value = -1 * lastLog.amount;
+        setPower(lastLog.idx);
+        amount.value = tmp;
+        isCancel.value = false;
+    }
 }
 </script>
 
@@ -112,7 +170,7 @@ const setCriticalTrigger = () => {
     <div class="board-container">
         <FightField :fight-points="props.fightPointDisplay" :set-power="setPower" :is-up-side-down="isUpSideDown" :critical-points="criticalPoints" />
         <FightKeyboard :amount="amount" :up="increaseAmount" :down="decreaseAmount" :large-up="increaseLarge" :large-down="decreaseLarge"
-                       :front="setFrontPower" :over="setOverTrigger" :critical="setCriticalTrigger" />
+                       :front="setFrontPower" :over="setOverTrigger" :critical="setCriticalTrigger" :cancel="cancelLastSetting" />
     </div>
 </template>
 
