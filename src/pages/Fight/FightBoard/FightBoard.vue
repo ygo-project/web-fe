@@ -94,7 +94,6 @@ const setPower = (idx) => {
 }
 
 const setFrontPower = () => {
-    amount.value = 10000;
     isOverTrigger.value = false;
     isCriticalTrigger.value = false;
     isFrontTrigger.value = true;
@@ -110,9 +109,9 @@ const setFrontPower = () => {
     }
 
     props.log.push({
-        idx: -1,
+        idx: props.isUpSideDown ? 1 : -1,
         trigger: 'front',
-        amount: props.isUpSideDown ? 1 : -1,
+        amount: amount.value,
     });
     isFrontTrigger.value = false;
 }
@@ -141,8 +140,8 @@ const cancelLastSetting = () => {
     if (lastLog.trigger === 'front') {
         let tmp = amount.value;
         isCancel.value = true;
-        amount.value = -10000;
-        if (lastLog.amount > 0) {
+        amount.value = -1 * lastLog.amount;
+        if (lastLog.idx > 0) {
             setPower(0);
             setPower(2);
             setPower(4);
