@@ -11,6 +11,12 @@ const props = defineProps({
 });
 
 const editFighterStatus = async (status) => {
+    if (status === 'D') {
+        if (!confirm('정말 삭제하시겠습니까?')) {
+            return;
+        }
+    }
+
     const body = {
         userId: localStorage.getItem('userId'),
         name: props.name,
