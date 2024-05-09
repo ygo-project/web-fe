@@ -5,6 +5,7 @@ import { useStore } from "vuex";
 import InputController from "@/pages/League/controller/Input/InputController.vue";
 import FirstStep from "@/pages/League/viewer/FirstStep.vue";
 import SecondStep from "@/pages/League/viewer/SecondStep.vue";
+import ThirdStep from "@/pages/League/viewer/ThirdStep.vue";
 
 const store = useStore();
 
@@ -19,6 +20,7 @@ const stage = computed(() => store.getters.GET_STAGE );
         <div class="league-viewer">
             <FirstStep v-if="stage === 0"/>
             <SecondStep v-else-if="stage === 1"/>
+            <ThirdStep v-else-if="stage === 2"/>
         </div>
     </div>
 </template>

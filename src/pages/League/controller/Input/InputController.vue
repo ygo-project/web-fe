@@ -5,9 +5,9 @@ import { toast } from "vue3-toastify";
 
 import YgoButton from "@/components/atom/YgoButton.vue";
 import { apiClient } from "@/common/index.js";
-import FighterSelect from "@/pages/League/controller/Input/FighterSelect.vue";
-import DeckSelect from "@/pages/League/controller/Input/DeckSelect.vue";
-import NationSelect from "@/pages/League/controller/Input/NationSelect.vue";
+import FighterSelect from "@/pages/League/controller/Input/selectBox/FighterSelect.vue";
+import DeckSelect from "@/pages/League/controller/Input/selectBox/DeckSelect.vue";
+import NationSelect from "@/pages/League/controller/Input/selectBox/NationSelect.vue";
 
 const store = useStore();
 
@@ -24,6 +24,8 @@ const leagueNameMessage = ref('');
 const isActiveFocus = ref({
     leagueNameActive: false,
 });
+
+const isTesting = true;
 
 const handleFocus = (target) => {
     isActiveFocus.value = {
@@ -49,6 +51,8 @@ const handleLeagueName = () => {
 
 const onRegister = () => {
     store.dispatch('ACT_LEAGUE_NAME', leagueName.value);
+
+    toast.success('대회명이 등록되었습니다.');
 }
 
 const onSelectFighter = (value) => {
@@ -93,6 +97,7 @@ const onAdd = () => {
         deck: deck.value.seq,
         deckName: deck.value.nickname,
         deckNation: deck.value.nation,
+        isEliminated: false,
     }]);
 
 
@@ -122,7 +127,7 @@ onMounted(async () => {
 
         if (response.status === 200) {
             deckList.value = [...response.data];
-            deckListAll.value = [...response.data];
+            deckListAll.value = response.data.sort((d1, d2) => d1.seq - d2.seq);
             deck.value = response.data[0];
         } else {
             console.log(response);
@@ -131,6 +136,44 @@ onMounted(async () => {
     } catch (error) {
         console.log(error);
         toast.error('덱 목록을 불러오던 중 오류가 발생하였습니다. 새로고침을 진행해주세요.');
+    }
+
+    if (isTesting) {
+        const newList = [];
+        const player = [ 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 ];
+        const deckPick = [ 35, 27, 40, 17, 28, 80, 3, 23, 30, 82, 51, 54, 62, 20, 72 ];
+        let idx = 0;
+
+        while (newList.length < player.length) {
+            const deckIdx = deckPick[idx];
+            const personIdx = player[idx++];
+            // const deckIdx = Math.floor(Math.random() * deckList.value.length);
+
+            const person = fighterList.value[personIdx];
+            const deck = deckListAll.value[deckIdx];
+
+            let isDuplicate = false;
+            //중복체크
+            newList.forEach((item, index) => {
+                if (item.fighter === person.name && item.deck === deck.seq) {
+                    isDuplicate = true;
+                }
+            });
+
+            if (isDuplicate) {
+                continue;
+            }
+
+            newList.push({
+                fighter: person.name,
+                deck: deck.seq,
+                deckName: deck.nickname,
+                deckNation: deck.nation,
+                isEliminated: false,
+            });
+        }
+
+        await store.dispatch('ACT_FIGHTER_LIST', newList);
     }
 });
 </script>
