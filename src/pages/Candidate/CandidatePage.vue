@@ -109,7 +109,7 @@ import Fighter from "@/pages/Candidate/Fighter/Fighter.vue";
                     </tr>
                 </thead>
                 <tbody>
-                    <Fighter v-for="(item, index) in fighterList" :seq="item.seq" :name="item.name" :status="item.status" :refresh="loadList" />
+                    <Fighter v-for="(item, index) in fighterList" :seq="`${item.seq}`" :name="item.name" :status="item.status" :refresh="loadList" />
                 </tbody>
             </table>
         </div>

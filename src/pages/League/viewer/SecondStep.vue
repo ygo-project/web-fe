@@ -5,33 +5,108 @@ import { toast } from "vue3-toastify";
 
 import Swiss from "@/pages/League/viewer/item/Swiss.vue";
 import YgoButton from "@/components/atom/YgoButton.vue";
+import {apiClient} from "@/common/index.js";
 
 const store = useStore();
 
 const leagueName = store.getters.GET_LEAGUE_NAME;
 const fighterList = store.getters.GET_FIGHTER_LIST;
 
+const promotionList = [];
+const log = [];
 const swissRound = 2;
 
 const maxRound = ref(0);
 const swissTree = ref([]);
 const roundReady = ref([]);
+const isFinish = ref(false);
 
 const setNextRound = (round) => {
-    if (roundReady.value[round]) return;
+    roundReady.value[round] += 1;
 
     const thisRound = swissTree.value[round - 1];
     const nextRound = swissTree.value[round];
 
+    if (roundReady.value[round] < thisRound.stage.length) return;
+
+    let pivot = 0;
     const node = thisRound.stage;
     for (let i = 0; i < node.length; i++) {
+        if (node[i].win.length === 0) {
+            pivot++;
+            continue;
+        }
         //이기면 다음
-        nextRound.stage[i].list = [...node[i].win];
+        nextRound.stage[i - pivot].list = [...nextRound.stage[i - pivot].list, ...node[i].win];
         //지면 + 1
-        nextRound.stage[i + 1].list = [...node[i].lose];
+        nextRound.stage[i - pivot + 1].list = [...nextRound.stage[i - pivot + 1].list, ...node[i].lose];
+
+        //전적 기록
+        for (let j = 0; j < node[i].win.length; j++) {
+            const win = node[i].win[j];
+            const lose = node[i].lose[j];
+
+            const winLog = {
+                leagueSeq: store.getters.GET_LEAGUE_SEQ,
+                fighterSeq: win.fighter,
+                deckSeq: win.deck,
+                opponentFighterSeq: lose.fighter,
+                opponentDeckSeq: lose.deck,
+                round: "S_" + round,
+                result: "1",
+            }
+            const loseLog = {
+                leagueSeq: store.getters.GET_LEAGUE_SEQ,
+                fighterSeq: lose.fighter,
+                deckSeq: lose.deck,
+                opponentFighterSeq: win.fighter,
+                opponentDeckSeq: win.deck,
+                round: "S_" + round,
+                result: "0",
+            }
+
+            log.push(winLog);
+            log.push(loseLog);
+        }
     }
 
-    roundReady.value[round] = true;
+    for (let i = 0; i < nextRound.stage.length; i++) {
+        if (nextRound.stage[i].winCnt >= swissRound) {
+            for (let k = 0; k < nextRound.stage[i].list.length; k++) {
+                promotionList.push(nextRound.stage[i].list[k]);
+            }
+            roundReady.value[round + 1] += 1;
+        }
+        if (nextRound.stage[i].loseCnt >= swissRound) {
+            roundReady.value[round + 1] += 1;
+        }
+    }
+}
+
+const swissDone = () => {
+    toast.info("토너먼트 진출 덱이 결정되었습니다.", {
+        position: "top-center"
+    });
+    isFinish.value = true;
+}
+
+const proceedNextStage = async () => {
+    const body = {
+        logList: log,
+    };
+
+    await apiClient.post(`/log/insert`, body)
+        .then((response) => {
+            if (response.status === 200) {
+                store.dispatch('ACT_STAGE', 2);
+                store.dispatch('ACT_FIGHTER_LIST', promotionList);
+
+                toast.success('대회 결과가 기록되었습니다.');
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+        });
 }
 
 const setRound = (round) => {
@@ -93,19 +168,18 @@ const setRound = (round) => {
                     another = Math.floor(Math.random() * list.length);
                 }
 
-                if (loopCounter > 1000) {
-                    //재작업
-                    isAllocated.fill(false);
-                    node[i].versus = [];
-                    j = -1;
-                    continue;
-                }
+                while (isAllocated[another]) another = Math.floor(Math.random() * list.length);
+
                 isAllocated[another] = true;
                 now.white = list[another];
             }
 
             node[i].versus.push(now);
         }
+    }
+
+    if (round === maxRound.value - 1) {
+        swissDone();
     }
 }
 
@@ -120,32 +194,41 @@ onMounted(() => {
             list: fighterList,
             versus: [],
             win: [],
-            lose: []
+            lose: [],
+            winCnt: 0,
+            loseCnt: 0,
         }]
     });
-    ready.push(true);
+    ready.push(1);
 
-    for (let i = 1, subRound = 1; i < swissRound * 2; i++) { // 이후 라운드
+    for (let i = 1, subRound = 1, win = 0, lose = 0; i < swissRound * 2; i++) { // 이후 라운드
         const round = {
             round: i,
             stage: [],
         };
 
-        if (i <= swissRound) subRound++;
-        else subRound--;
+        if (i <= swissRound) {
+            win++;
+            subRound++;
+        } else {
+            lose++;
+            subRound--;
+        }
 
         for (let j = 0; j < subRound; j++) {
             const sub = {
                 list: [],
                 versus: [],
                 win: [],
-                lose: []
+                lose: [],
+                winCnt: win - j,
+                loseCnt: lose + j,
             };
 
             round.stage.push(sub);
         }
         tree.push(round);
-        ready.push(false);
+        ready.push(0);
     }
 
     swissTree.value = tree;
@@ -159,12 +242,15 @@ onMounted(() => {
         <h2>스위스 스테이지 | {{ leagueName }}</h2>
         <div class="stage">
             <div v-for="(k, i) in maxRound + 1">
-                <YgoButton v-if="roundReady[i]" @click="setRound(i)">진행</YgoButton>
+                <YgoButton v-if="i === 0 || swissTree[i - 1] && roundReady[i] >= swissTree[i - 1].stage.length" @click="setRound(i)">진행</YgoButton>
                 <Swiss v-for="(item, index) in swissTree.filter((a) => a.round === i)"
                     :round="item" :done-event="() => setNextRound(i + 1)"
                 />
             </div>
         </div>
+    </div>
+    <div class="btn-box">
+        <YgoButton v-if="isFinish" color="teal" :click-event="proceedNextStage">토너먼트 진행</YgoButton>
     </div>
 </template>
 
@@ -181,6 +267,19 @@ onMounted(() => {
             flex-direction: row;
             align-items: center;
         }
+    }
+}
+
+.btn-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    background: var(--bg-element1);
+    margin: 1.5rem 0;
+
+    button {
+        margin-right: 0.2rem;
     }
 }
 </style>
