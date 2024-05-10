@@ -5,7 +5,7 @@ import IconBase from "@/components/atom/IconBase.vue";
 import ChevronDown from "@/assets/svgs/ChevronDown.vue";
 
 const props = defineProps({
-    fighter: String,
+    fighter: Object,
     fighterList: Array,
     onSelectFighter: Function,
 });
@@ -20,16 +20,16 @@ const setIsToggle = () => {
 <template>
     <div class="fighter-list-select-container">
         <div class="selected" @click="setIsToggle">
-            {{ fighter }} <IconBase><ChevronDown></ChevronDown></IconBase>
+            {{ fighter.name }} <IconBase><ChevronDown></ChevronDown></IconBase>
         </div>
         <div :class="isToggle ? 'fighter-list-select toggle' : 'fighter-list-select'">
             <ul>
                 <li
                     v-for="item in fighterList"
-                    :key="item.name"
-                    :class="item.name === fighter ? 'active' : ''"
+                    :key="item.seq"
+                    :class="item.seq === fighter.seq ? 'active' : ''"
                     @click="() => {
-                        onSelectFighter(item.name);
+                        onSelectFighter(item);
                         setIsToggle();
                     }"
                 >

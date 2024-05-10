@@ -48,7 +48,7 @@ const createTokenRefresh = async () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('userId');
-        await store.dispatch('ACT_AUTH', undefined);
+        await store.dispatch('ACT_AUTH', null);
 
         await router.replace(`/`);
         return undefined;
@@ -78,7 +78,7 @@ apiClient.interceptors.response.use(
         if (response.status === 403 && response.data?.message === 'Expired JWT Token') {
             const accessToken = await createTokenRefresh();
         } else {
-            return error;
+            throw error;
         }
     }
 );

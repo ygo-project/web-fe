@@ -5,6 +5,7 @@ import { toast } from "vue3-toastify";
 
 import Versus from "@/pages/League/viewer/item/Versus.vue";
 import YgoButton from "@/components/atom/YgoButton.vue";
+import { apiClient } from "@/common/index.js";
 
 const store = useStore();
 
@@ -17,9 +18,11 @@ const isFinish = ref(false);
 
 const isTesting = true;
 
-const win = (round, position, side) => {
+const win = (round, position, side, versus) => {
+    const winDeck = side === 0 ? versus.blue : versus.white; // 0 : blue, 1: white
     if (round === 0 && isValidFinish()) { //우승자 결정
-        toast.info(leagueName + " 우승 덱은 " + side.deckName + " 입니다! 축하합니다.", {
+        versus.win = side === 0 ? 'blue' : 'white';
+        toast.info(leagueName + " 우승 덱은 " + winDeck.deckName + " 입니다! 축하합니다.", {
             position: "top-center"
         });
         isFinish.value = true;
@@ -29,9 +32,11 @@ const win = (round, position, side) => {
 
         const node = tournamentTree.value[left + Math.floor(position / 2)];
         if (isBlue) {
-            node.blue = side;
+            versus.win = side === 0 ? 'blue' : 'white';
+            node.blue = winDeck;
         } else {
-            node.white = side;
+            versus.win = side === 0 ? 'blue' : 'white';
+            node.white = winDeck;
         }
 
         tournamentTree.value[left + position / 2] = node;
@@ -43,6 +48,8 @@ const isValidFinish = () => {
     for (let i = 0; i < tournamentTree.value.length; i++) {
         const node = tournamentTree.value[i];
 
+        if (node.round === maxRound.value) continue;
+
         if (node.blue.deckName === undefined || node.white.deckName === undefined) {
             toast.warning('아직 진행중인 파이트가 남아있습니다.');
             valid = false;
@@ -52,8 +59,71 @@ const isValidFinish = () => {
     return valid;
 };
 
-const logLeagueResult = () => {
+const logLeagueResult = async () => {
+    const log = [];
 
+    for (let i = 0; i < tournamentTree.value.length; i++) {
+        const node = tournamentTree.value[i];
+        const win = node.win === 'blue';
+
+        let winLog, loseLog;
+        if (win) {
+            winLog = {
+                leagueSeq: store.getters.GET_LEAGUE_SEQ,
+                fighterSeq: node.blue.fighter,
+                deckSeq: node.blue.deck,
+                opponentFighterSeq: node.white.fighter,
+                opponentDeckSeq: node.white.deck,
+                result: "1",
+            };
+            loseLog = {
+                leagueSeq: store.getters.GET_LEAGUE_SEQ,
+                fighterSeq: node.white.fighter,
+                deckSeq: node.white.deck,
+                opponentFighterSeq: node.blue.fighter,
+                opponentDeckSeq: node.blue.deck,
+                result: "0",
+            };
+        } else {
+            winLog = {
+                leagueSeq: store.getters.GET_LEAGUE_SEQ,
+                fighterSeq: node.white.fighter,
+                deckSeq: node.white.deck,
+                opponentFighterSeq: node.blue.fighter,
+                opponentDeckSeq: node.blue.deck,
+                result: "1",
+            };
+            loseLog = {
+                leagueSeq: store.getters.GET_LEAGUE_SEQ,
+                fighterSeq: node.blue.fighter,
+                deckSeq: node.blue.deck,
+                opponentFighterSeq: node.white.fighter,
+                opponentDeckSeq: node.white.deck,
+                result: "0",
+            };
+        }
+        log.push(winLog);
+        log.push(loseLog);
+    }
+
+    const body = {
+        logList: log,
+    };
+
+    await apiClient.post(`/log/insert`, body)
+        .then((response) => {
+            if (response.status === 200) {
+                store.dispatch('ACT_STAGE', 0);
+                store.dispatch('ACT_LEAGUE_SEQ', -1);
+                store.dispatch('ACT_LEAGUE_NAME', '');
+                store.dispatch('ACT_FIGHTER_LIST', []);
+
+                toast.success('대회 결과가 기록되었습니다.');
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+        });
 };
 
 onMounted(() => {
@@ -153,7 +223,7 @@ onMounted(() => {
             <div v-for="(k, i) in maxRound + 1">
                 <Versus :key="index" v-for="(item, index) in tournamentTree.filter((v) => v.round === i)"
                         :blue="item.blue" :white="item.white"
-                        :blue-win="() => win(i, index, item.blue)" :white-win="() => win(i, index, item.white)"
+                        :blue-win="() => win(i, index, 0, item)" :white-win="() => win(i, index, 1, item)"
                 />
             </div>
         </div>

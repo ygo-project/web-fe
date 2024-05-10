@@ -5,6 +5,7 @@ import { toast } from "vue3-toastify";
 
 import Fighter from "@/pages/League/viewer/item/Fighter.vue";
 import YgoButton from "@/components/atom/YgoButton.vue";
+import {apiClient} from "@/common/index.js";
 
 const store = useStore();
 
@@ -20,6 +21,8 @@ const proceed = () => {
         return;
     }
 
+    setLeague(leagueName);
+
     store.dispatch('ACT_STAGE', 1);
 }
 
@@ -31,7 +34,26 @@ const skipSwiss = () => {
         return;
     }
 
+    setLeague(leagueName);
+
     store.dispatch('ACT_STAGE', 2);
+}
+
+const setLeague = async (leagueName) => {
+    const body = {
+        userId : localStorage.getItem('userId'),
+        name: leagueName,
+    };
+
+    try {
+        const response = await apiClient.post('/league/insert', body);
+
+        if (response.status === 200) {
+            await store.dispatch('ACT_LEAGUE_SEQ', response.data);
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 </script>
 

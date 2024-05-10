@@ -12,7 +12,7 @@ import NationSelect from "@/pages/League/controller/Input/selectBox/NationSelect
 const store = useStore();
 
 const leagueName = ref('');
-const fighter = ref('');
+const fighter = ref({});
 const deck = ref({});
 
 const fighterList = ref([]);
@@ -49,10 +49,21 @@ const handleLeagueName = () => {
     }
 }
 
-const onRegister = () => {
-    store.dispatch('ACT_LEAGUE_NAME', leagueName.value);
+const onRegister = async () => {
+    await apiClient.get(`/league/find/${leagueName.value}`)
+        .then((response) => {
+            if (response.status === 200) {
+                store.dispatch('ACT_LEAGUE_NAME', leagueName.value);
 
-    toast.success('대회명이 등록되었습니다.');
+                toast.success('대회명이 등록되었습니다.');
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            if (error.response?.status === 409) {
+                toast.error(`이미 등록된 대회명입니다.`);
+            }
+        });
 }
 
 const onSelectFighter = (value) => {
@@ -93,7 +104,8 @@ const onAdd = () => {
     }
 
     store.dispatch('ACT_FIGHTER_LIST', [...list, {
-        fighter: fighter.value,
+        fighter: fighter.value.seq,
+        fighterName: fighter.value.name,
         deck: deck.value.seq,
         deckName: deck.value.nickname,
         deckNation: deck.value.nation,
@@ -111,7 +123,7 @@ onMounted(async () => {
 
         if (response.status === 200) {
             fighterList.value = response.data;
-            fighter.value = response.data[0].name;
+            fighter.value = response.data[0];
         } else {
             console.log(response);
             toast.error('후보를 불러오던 중 서버 오류가 발생하였습니다. 새로고침을 진행해주세요.');
@@ -140,7 +152,7 @@ onMounted(async () => {
 
     if (isTesting) {
         const newList = [];
-        const player = [ 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 ];
+        const player = [ 1, 1, 1, 0, 0, 0, 2, 2, 2, 3, 3, 3, 4, 4, 4 ];
         const deckPick = [ 35, 27, 40, 17, 28, 80, 3, 23, 30, 82, 51, 54, 62, 20, 72 ];
         let idx = 0;
 
@@ -155,7 +167,7 @@ onMounted(async () => {
             let isDuplicate = false;
             //중복체크
             newList.forEach((item, index) => {
-                if (item.fighter === person.name && item.deck === deck.seq) {
+                if (item.fighter === person.seq && item.deck === deck.seq) {
                     isDuplicate = true;
                 }
             });
@@ -165,7 +177,8 @@ onMounted(async () => {
             }
 
             newList.push({
-                fighter: person.name,
+                fighter: person.seq,
+                fighterName: person.name,
                 deck: deck.seq,
                 deckName: deck.nickname,
                 deckNation: deck.nation,

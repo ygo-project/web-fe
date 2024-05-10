@@ -40,7 +40,7 @@ const deleteFighter = () => {
 <template>
     <div :class="'fighter-info-container ' + nation + ' ' + step + ' ' + active">
         <IconBase v-if="stage === 0" @click="deleteFighter"><XCircleIcon></XCircleIcon></IconBase>
-        <b>{{ fighter.fighter }}</b>
+        <b>{{ fighter.fighterName }}</b>
         |
         <span>{{ fighter.deckName }}</span>
     </div>
