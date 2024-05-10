@@ -95,7 +95,7 @@ const deleteFighter = () => {
     }
 
     &.white {
-        background: #fbfcfd;
+        background: olive;
     }
 
     &.disabled {

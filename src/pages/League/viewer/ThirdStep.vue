@@ -16,8 +16,6 @@ const maxRound = ref(0);
 const tournamentTree = ref([]);
 const isFinish = ref(false);
 
-const isTesting = true;
-
 const win = (round, position, side, versus) => {
     const winDeck = side === 0 ? versus.blue : versus.white; // 0 : blue, 1: white
     if (round === 0 && isValidFinish()) { //우승자 결정
@@ -74,6 +72,7 @@ const logLeagueResult = async () => {
                 deckSeq: node.blue.deck,
                 opponentFighterSeq: node.white.fighter,
                 opponentDeckSeq: node.white.deck,
+                round: "T_" + node.round,
                 result: "1",
             };
             loseLog = {
@@ -82,6 +81,7 @@ const logLeagueResult = async () => {
                 deckSeq: node.white.deck,
                 opponentFighterSeq: node.blue.fighter,
                 opponentDeckSeq: node.blue.deck,
+                round: "T_" + node.round,
                 result: "0",
             };
         } else {
@@ -91,6 +91,7 @@ const logLeagueResult = async () => {
                 deckSeq: node.white.deck,
                 opponentFighterSeq: node.blue.fighter,
                 opponentDeckSeq: node.blue.deck,
+                round: "T_" + node.round,
                 result: "1",
             };
             loseLog = {
@@ -99,6 +100,7 @@ const logLeagueResult = async () => {
                 deckSeq: node.blue.deck,
                 opponentFighterSeq: node.white.fighter,
                 opponentDeckSeq: node.white.deck,
+                round: "T_" + node.round,
                 result: "0",
             };
         }
@@ -184,31 +186,6 @@ onMounted(() => {
             isAllocated[another] = true;
             tree[left + i].white = fighterList[another];
         }
-    }
-
-    if (isTesting) {
-        tree[7].blue = fighterList[0];
-        tree[7].white = fighterList[9];
-
-        tree[8].blue = fighterList[12];
-        tree[8].white = fighterList[3];
-
-        tree[9].blue = fighterList[6];
-        tree[9].white = fighterList[1];
-
-        tree[10].blue = fighterList[11];
-        tree[10].white = fighterList[13];
-
-        tree[11].blue = fighterList[4];
-        tree[11].white = fighterList[7];
-
-        tree[12].blue = fighterList[2];
-        tree[12].white = fighterList[10];
-
-        tree[13].blue = fighterList[14];
-        tree[13].white = fighterList[5];
-
-        tree[14].blue = fighterList[8];
     }
 
     tournamentTree.value = tree;

@@ -152,8 +152,8 @@ onMounted(async () => {
 
     if (isTesting) {
         const newList = [];
-        const player = [ 1, 1, 1, 0, 0, 0, 2, 2, 2, 3, 3, 3, 4, 4, 4 ];
-        const deckPick = [ 35, 27, 40, 17, 28, 80, 3, 23, 30, 82, 51, 54, 62, 20, 72 ];
+        const player = [ 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 3, 3, 3, 4, 4, 4 ];
+        const deckPick = [ 35, 27, 40, 61, 17, 28, 80, 3, 23, 30, 82, 51, 54, 62, 20, 72 ];
         let idx = 0;
 
         while (newList.length < player.length) {

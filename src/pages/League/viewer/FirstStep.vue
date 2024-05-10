@@ -18,7 +18,7 @@ const proceed = () => {
 
     if (leagueName === '') {
         toast.info('대회명을 입력해주세요.');
-        return;
+        // return;
     }
 
     setLeague(leagueName);
