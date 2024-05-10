@@ -4,6 +4,7 @@ import { toast } from "vue3-toastify";
 import { apiClient } from "@/common/index.js";
 
 const props = defineProps({
+    seq: String,
     name: String,
     status: String,
     user: String,
@@ -18,8 +19,7 @@ const editFighterStatus = async (status) => {
     }
 
     const body = {
-        userId: localStorage.getItem('userId'),
-        name: props.name,
+        seq: props.seq,
         status: status,
     };
 
