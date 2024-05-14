@@ -75,7 +75,7 @@ apiClient.interceptors.response.use(
     async (error) => {
         const { response } = error;
 
-        if (response.status === 403 && response.data?.message === 'Expired JWT Token') {
+        if (response.status === 403) {
             const accessToken = await createTokenRefresh();
         } else {
             throw error;
