@@ -10,12 +10,13 @@ const deckRateList = ref([]);
 const championList = ref([]);
 
 onMounted(async () => {
+    let nation, deck, league;
     // 국가별 승률 조회
     try {
         const response = await apiClient.get(`/statistics/nation`);
 
         if (response.status === 200) {
-            nationRateList.value = response.data;
+            nation = response.data;
         } else {
             console.log(response);
             toast.error('국가별 정보를 불러오던 중 서버 오류가 발생하였습니다. 새로고침을 진행해주세요.');
@@ -30,7 +31,7 @@ onMounted(async () => {
         const response = await apiClient.get(`/statistics/deck`);
 
         if (response.status === 200) {
-            deckRateList.value = response.data;
+            deck = response.data;
         } else {
             console.log(response);
             toast.error('덱별 정보를 불러오던 중 서버 오류가 발생하였습니다. 새로고침을 진행해주세요.');
@@ -45,7 +46,7 @@ onMounted(async () => {
         const response = await apiClient.get(`/statistics/champion`);
 
         if (response.status === 200) {
-            championList.value = response.data;
+            league = response.data;
         } else {
             console.log(response);
             toast.error('우승자 정보를 불러오던 중 서버 오류가 발생하였습니다. 새로고침을 진행해주세요.');
@@ -54,6 +55,10 @@ onMounted(async () => {
         console.log(error);
         toast.error('우승자 정보를 불러오던 중 오류가 발생하였습니다. 새로고침을 진행해주세요.');
     }
+
+    nationRateList.value = nation;
+    deckRateList.value = deck;
+    championList.value = league;
 });
 </script>
 

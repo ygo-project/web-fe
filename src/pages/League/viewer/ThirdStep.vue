@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import {computed, onMounted, ref} from "vue";
 import { useStore } from "vuex";
 import { toast } from "vue3-toastify";
 
@@ -13,11 +13,17 @@ const leagueName = store.getters.GET_LEAGUE_NAME;
 const fighterList = store.getters.GET_FIGHTER_LIST;
 
 const maxRound = ref(0);
-const tournamentTree = ref([]);
+const tournamentTree = computed(() => store.getters.GET_TOURNAMENT_LIST);
 const isFinish = ref(false);
 
 const win = (round, position, side, versus) => {
-    const winDeck = side === 0 ? versus.blue : versus.white; // 0 : blue, 1: white
+    let winDeck, loseDeck;
+    winDeck = Object.assign(side === 0 ? versus.blue : versus.white); // 0 : blue, 1: white
+    loseDeck = Object.assign(side === 0 ? versus.white : versus.blue);
+
+    winDeck.isLose = false;
+    loseDeck.isLose = true;
+
     if (round === 0 && isValidFinish()) { //우승자 결정
         versus.win = side === 0 ? 'blue' : 'white';
         toast.info(leagueName + " 우승 덱은 " + winDeck.deckName + " 입니다! 축하합니다.", {
@@ -153,43 +159,55 @@ onMounted(() => {
         bit <<= 1;
         round++;
     }
-
-    //대진표 할당
-    let left = (1 << round) - 1;
-    let roundSize = left + 1;
-    const isAllocated = new Array(fighterList.length);
-    isAllocated.fill(false);
-
-    for (let i = 0; i < roundSize; i++) {
-        //각 자리 시드 할당
-        let player = Math.floor(Math.random() * fighterList.length);
-
-        while (isAllocated[player]) player = Math.floor(Math.random() * fighterList.length);
-
-        isAllocated[player] = true;
-        tree[left + i].blue = fighterList[player];
-
-        //남은 플레이어 수가 자리 수보다 많은 경우만 상대 할당, 아닐 경우 해당 시드는 부전승
-        let leftPlayer = 0;
-        for (let j = 0; j < isAllocated.length; j++) {
-            if (!isAllocated[j]) leftPlayer++;
-        }
-
-        // 대전상대 할당
-        if (leftPlayer >= roundSize - i) {
-            let another = Math.floor(Math.random() * fighterList.length);
-
-            while (isAllocated[another]
-                || tree[left + i].blue.fighter === fighterList[another].fighter // 대전상대가 자기 자신과 다르면
-                ) another = Math.floor(Math.random() * fighterList.length);
-
-            isAllocated[another] = true;
-            tree[left + i].white = fighterList[another];
-        }
-    }
-
-    tournamentTree.value = tree;
     maxRound.value = round;
+
+    if (tournamentTree.value.length === 0) {
+        //대진표 할당
+        let left = (1 << round) - 1;
+        let roundSize = left + 1;
+        const isAllocated = new Array(fighterList.length);
+        isAllocated.fill(false);
+
+        for (let i = 0; i < roundSize; i++) {
+            //각 자리 시드 할당
+            let player = Math.floor(Math.random() * fighterList.length);
+
+            while (isAllocated[player]) player = Math.floor(Math.random() * fighterList.length);
+
+            isAllocated[player] = true;
+            tree[left + i].blue = fighterList[player];
+
+            //남은 플레이어 수가 자리 수보다 많은 경우만 상대 할당, 아닐 경우 해당 시드는 부전승
+            let leftPlayer = 0;
+            for (let j = 0; j < isAllocated.length; j++) {
+                if (!isAllocated[j]) leftPlayer++;
+            }
+
+            // 대전상대 할당
+            if (leftPlayer >= roundSize - i) {
+                let another = Math.floor(Math.random() * fighterList.length);
+
+                let loopCounter = 0;
+
+                while (isAllocated[another]
+                || tree[left + i].blue.fighter === fighterList[another].fighter // 대전상대가 자기 자신과 다르면
+                    ) {
+                    if (loopCounter > 10000) {
+                        break;
+                    }
+                    loopCounter++;
+                    another = Math.floor(Math.random() * fighterList.length);
+                }
+
+                while (isAllocated[another]) another = Math.floor(Math.random() * fighterList.length);
+
+                isAllocated[another] = true;
+                tree[left + i].white = fighterList[another];
+            }
+        }
+
+        store.dispatch('ACT_TOURNAMENT_LIST', tree);
+    }
 });
 </script>
 
@@ -221,11 +239,16 @@ onMounted(() => {
         background: var(--bg-element2);
 
         > div {
+            max-width: 100%;
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;
             overflow-x: auto;
             margin-bottom: .675rem;
+
+            > div {
+
+            }
         }
     }
 }

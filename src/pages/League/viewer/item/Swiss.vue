@@ -9,42 +9,46 @@ const props = defineProps({
     doneEvent: Function,
 });
 
-const doneCnt = ref(0);
-
 const swissRound = 2;
 
-const win = (stage, winItem, loseItem) => {
-    const winSet = [];
+const win = (stage, winItem, loseItem, index, stgIdx) => {
+    let winDeck = { }, loseDeck = { };
+    for (let key in winItem) {
+        winDeck[key] = winItem[key];
+    }
+    winDeck.isLose = false;
+    for (let key in loseItem) {
+        loseDeck[key] = loseItem[key];
+    }
+    loseDeck.isLose = false;
+
+    stage.win[index] = winDeck;
+    stage.lose[index] = loseDeck;
+
+    winItem.isLose = false;
+    loseItem.isLose = true;
+
+    let done = 0;
     stage.win.forEach((value) => {
-        if (value.fighter !== loseItem.fighter || value.deck !== loseItem.deck) winSet.push(value);
+        if (value) done++;
     });
-    winSet.push(winItem);
-
-    stage.win = winSet;
-
-    const loseSet = [];
     stage.lose.forEach((value) => {
-        if (value.fighter !== winItem.fighter || value.deck !== winItem.deck) loseSet.push(value);
+        if (value) done++;
     });
-    loseSet.push(loseItem);
 
-    stage.lose = loseSet;
-
-    doneCnt.value = winSet.length + loseSet.length;
-
-    if (doneCnt.value === stage.list.length) {
-        props.doneEvent();
+    if (done === stage.list.length) {
+        props.doneEvent(stgIdx);
     }
 }
 </script>
 
 <template>
     <div class="swiss-container">
-        <div v-for="stg in round.stage">
+        <div v-for="(stg, stgIdx) in round.stage">
             <h3 v-if="stg.versus.length > 0">{{ `${stg.winCnt} - ${stg.loseCnt}` }}</h3>
             <Versus v-for="(item, index) in stg.versus" v-if="stg.winCnt < swissRound && stg.loseCnt < swissRound"
                     :blue="item.blue" :white="item.white"
-                    :blue-win="() => win(stg, item.blue, item.white)" :white-win="() => win(stg, item.white, item.blue)"
+                    :blue-win="() => win(stg, item.blue, item.white, index, stgIdx)" :white-win="() => win(stg, item.white, item.blue, index, stgIdx)"
             />
             <div class="win" v-else-if="stg.winCnt >= swissRound" v-for="(item, index) in stg.versus">
                 <Fighter :fighter="item.blue" />

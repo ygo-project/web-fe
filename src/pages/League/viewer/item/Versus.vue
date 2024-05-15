@@ -10,8 +10,8 @@ const props = defineProps({
     whiteWin: Function,
 });
 
-const blueDisabled = ref(props.blue === undefined);
-const whiteDisabled = ref(props.white === undefined);
+const blueDisabled = ref(props.blue.isLose);
+const whiteDisabled = ref(props.white.isLose);
 </script>
 
 <template>
