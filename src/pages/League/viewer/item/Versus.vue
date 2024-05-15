@@ -8,6 +8,7 @@ const props = defineProps({
     white: Object,
     blueWin: Function,
     whiteWin: Function,
+    isDisabled: Boolean,
 });
 
 const blueDisabled = ref(props.blue.isLose);
@@ -16,9 +17,21 @@ const whiteDisabled = ref(props.white.isLose);
 
 <template>
 <div class="versus-container">
-    <Fighter :fighter="blue" @click="() => { blueWin(); blueDisabled = false; whiteDisabled = true; }" :is-disabled="blueDisabled" />
+    <Fighter :fighter="blue" @click="() => {
+        if (!isDisabled) {
+            blueWin();
+            blueDisabled = false;
+            whiteDisabled = true;
+        }
+    }" :is-disabled="blueDisabled" />
     <b>VS</b>
-    <Fighter :fighter="white" @click="() => { whiteWin(); whiteDisabled = false; blueDisabled = true; }" :is-disabled="whiteDisabled" />
+    <Fighter :fighter="white" @click="() => {
+        if (!isDisabled) {
+            whiteWin();
+            whiteDisabled = false;
+            blueDisabled = true;
+        }
+    }" :is-disabled="whiteDisabled" />
 </div>
 </template>
 

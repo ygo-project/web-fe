@@ -153,6 +153,45 @@ onMounted(async () => {
         console.log(error);
         toast.error('덱 목록을 불러오던 중 오류가 발생하였습니다. 새로고침을 진행해주세요.');
     }
+
+    if (false) {
+        const newList = [];
+        const player = [ 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 3, 3, 3, 4, 4, 4 ];
+        const deckPick = [ 35, 27, 40, 61, 17, 28, 80, 3, 23, 30, 82, 51, 54, 62, 20, 72 ];
+        let idx = 0;
+
+        while (newList.length < player.length) {
+            const deckIdx = deckPick[idx];
+            const personIdx = player[idx++];
+            // const deckIdx = Math.floor(Math.random() * deckList.value.length);
+
+            const person = fighterList.value[personIdx];
+            const deck = deckListAll.value[deckIdx];
+
+            let isDuplicate = false;
+            //중복체크
+            newList.forEach((item, index) => {
+                if (item.fighter === person.seq && item.deck === deck.seq) {
+                    isDuplicate = true;
+                }
+            });
+
+            if (isDuplicate) {
+                continue;
+            }
+
+            newList.push({
+                fighter: person.seq,
+                fighterName: person.name,
+                deck: deck.seq,
+                deckName: deck.nickname,
+                deckNation: deck.nation,
+                isEliminated: false,
+            });
+        }
+
+        await store.dispatch('ACT_FIGHTER_LIST', newList);
+    }
 });
 </script>
 

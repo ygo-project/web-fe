@@ -29,6 +29,10 @@ const setRound = (round) => {
     const thisRound = swissTree.value[round];
 
     if (round > 0) {
+        // 이전 진행 버튼 hide
+        roundReady.value[round - 1][0] = false;
+        console.log(roundReady);
+
         // 스테이지에 후보 세팅
         let pivot = 0;
         let topStagePivot = 0;
@@ -278,9 +282,10 @@ onMounted(() => {
         <h2>스위스 스테이지 | {{ leagueName }}</h2>
         <div class="stage">
             <div v-for="(k, i) in maxRound">
-                <YgoButton v-if="i === 0 || roundReady[i] && !roundReady[i].includes(false)" @click="setRound(i)">진행</YgoButton>
+                <YgoButton v-if="roundReady[i] && !roundReady[i].includes(false)" @click="setRound(i)">진행</YgoButton>
                 <Swiss v-for="(item, index) in swissTree.filter((a) => a.round === i)"
                     :round="item" :done-event="(stg) => setNextRound(i + 1, stg)"
+                    :is-active="roundReady[i] && !roundReady[i].includes(false)"
                 />
             </div>
         </div>

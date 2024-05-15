@@ -7,6 +7,7 @@ import Versus from "@/pages/League/viewer/item/Versus.vue";
 const props = defineProps({
     round: Object,
     doneEvent: Function,
+    isActive: Boolean,
 });
 
 const swissRound = 2;
@@ -49,6 +50,7 @@ const win = (stage, winItem, loseItem, index, stgIdx) => {
             <Versus v-for="(item, index) in stg.versus" v-if="stg.winCnt < swissRound && stg.loseCnt < swissRound"
                     :blue="item.blue" :white="item.white"
                     :blue-win="() => win(stg, item.blue, item.white, index, stgIdx)" :white-win="() => win(stg, item.white, item.blue, index, stgIdx)"
+                    :is-disabled="!isActive"
             />
             <div class="win" v-else-if="stg.winCnt >= swissRound" v-for="(item, index) in stg.versus">
                 <Fighter :fighter="item.blue" />
