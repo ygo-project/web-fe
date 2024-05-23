@@ -1,56 +1,65 @@
 <script setup>
-	import RatingTable from '@/pages/Rating/Container/RatingTable.vue'
+import { ref } from "vue";
+
+import YgoButton from "@/components/atom/YgoButton.vue";
+import DeckSearch from "@/pages/Rating/search/DeckSearch.vue";
+
+const deckActive = ref(true);
+const userActive = ref(false);
 </script>
 
 <template>
-	Rating
-	<div class="container mt-5">
-		<div class="btn-group">
-			<button v-for="(tab, index) in tabs" :key="index" @click="changeTab(index)" :class="{ 'btn-primary': currentTab === index, 'btn-secondary': currentTab !== index }" class="btn">{{ tab.deck_name }}</button>
-		</div>
-		<div class="mt-3">
-			<div v-for="(tab, index) in tabs" :key="index" v-show="currentTab == index">
-				<RatingTable :deck_name="tab.deck_name" :deckNumber="tab.deckNumber" ref="rating_table"/>
-			</div>
-		</div>
-	</div>
+    <div class="rating-container">
+        <div class="tab-area">
+            <YgoButton @click="deckActive = true; userActive = false;" :class="{ active: deckActive }">덱</YgoButton>
+            <YgoButton @click="userActive = true; deckActive = false;" :class="{ active: userActive }">유저</YgoButton>
+        </div>
+        <div class="tab-content-area" v-if="deckActive">
+            <div class="search-area">
+                <DeckSearch />
+            </div>
+            <div class="display-area">
+
+            </div>
+        </div>
+        <div class="tab-content-area" v-else-if="userActive">
+
+        </div>
+    </div>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				tabs: [],
-				currentTab:null,
-				deck_name:null,
-				deckNumber:null,
-			}
-		},
-		components: {
-			RatingTable
-		},
-		created(){
-			this.getDeck();
-			console.log(this.tabs);
-		},
-		methods: {
-			changeTab(index) {
-				this.currentTab = index;
-				this.deck_name = this.tabs[index].deck_name;
-				this.deckNumber = this.tabs[index].deckNumber;
-
-				console.log("deck_name : " + this.tabs[index].deck_name);
-				console.log("deckNumber : " + this.tabs[index].deckNumber);
-
-			},
-			async getDeck() {
-				this.tabs = await this.$api("https://ab56a9c8-61f3-4103-ac76-59f1f1e575c3.mock.pstmn.io/api/list?user="+0, "get");
-			},
-	    }
-	}
-</script>
 <style scoped>
-	.btn-primary {
-		font-weight: bold;
-	}
+.rating-container {
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    height: calc(100vh - 4rem);
+    margin: 0 auto;
+
+    .tab-area {
+        .active {
+            color: var(--primary2);
+            border: 1px solid var(--primary2);
+        }
+
+        button {
+            margin-right: 4px;
+            border: 1px solid #7c858d;
+        }
+    }
+
+    .tab-content-area {
+        .search-area {
+            width: 100%;
+            border-radius: 1rem;
+            margin-bottom: 1vh;
+        }
+
+        .display-area {
+            width: 100%;
+            background: var(--bg-element2);
+            border-radius: 1rem;
+        }
+    }
+}
 </style>
