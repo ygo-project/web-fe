@@ -49,7 +49,7 @@ const createTokenRefresh = async () => {
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('userId');
 
-        if (store) await store.dispatch('ACT_AUTH', null);
+        if (store) await store.dispatch('ACT_AUTH', 'LOGOUT');
 
         await router.replace(`/`);
         return undefined;

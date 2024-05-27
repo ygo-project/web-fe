@@ -2,10 +2,9 @@
 import { computed, onMounted, ref } from "vue";
 import { toast } from "vue3-toastify";
 
-import { apiClient } from "@/common/index.js";
 import YgoButton from "@/components/atom/YgoButton.vue";
-import NationSelect from "@/pages/League/controller/Input/selectBox/NationSelect.vue";
-import DeckSelect from "@/pages/League/controller/Input/selectBox/DeckSelect.vue";
+import FighterSelect from "@/pages/League/controller/Input/selectBox/FighterSelect.vue";
+import { apiClient } from "@/common/index.js";
 
 const props = defineProps({
     setCondition: Function,
@@ -15,69 +14,47 @@ const today = new Date();
 const startDate = ref(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()));
 const endDate = ref(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
 
-const deck = ref({});
+const fighter = ref({});
 
-const deckList = ref([]);
-const deckListAll = ref([]);
+const fighterList = ref([]);
 
 const startDateView = computed(() => startDate.value.getFullYear() + `-` + (startDate.value.getMonth() + 1) + `-` + startDate.value.getDate());
 const endDateView = computed(() => endDate.value.getFullYear() + `-` + (endDate.value.getMonth() + 1) + `-` + endDate.value.getDate());
 
-const onSelectDeck = (value) => {
-    deck.value = value;
-}
-
-const onSelectNation = (value) => {
-    const filtered = [];
-
-    if (value === '전체') {
-        deckListAll.value.forEach((item, index, array) => {
-            filtered.push(item);
-        });
-    } else {
-        deckListAll.value.forEach((item, index, array) => {
-            if (item.nation === value) {
-                filtered.push(item);
-            }
-        });
-    }
-
-    deck.value = filtered[0];
-    deckList.value = filtered;
-}
+const onSelectFighter = (value) => {
+    fighter.value = value;
+};
 
 const onSearch = async () => {
-    props.setCondition(startDateView.value, endDateView.value, deck.value.seq);
+    props.setCondition(startDateView.value, endDateView.value, fighter.value.seq);
 };
 
 onMounted(async () => {
-    // 뱅가드 덱 목록 조회
+    // 후보(파이터) 목록 조회
     try {
-        const response = await apiClient.get(`/deck/list/`);
+        const response = await apiClient.get(`/fighter/validList/${localStorage.getItem('userId')}`);
 
         if (response.status === 200) {
             const defaultDeck = {
                 seq: -1,
                 name: "전체",
-                nickname: "전체"
             };
 
-            deckList.value = [defaultDeck, ...response.data];
-            deckListAll.value = deckList.value.sort((d1, d2) => d1.seq - d2.seq);
-            deck.value = defaultDeck;
+            fighterList.value = [defaultDeck, ...response.data];
+            fighter.value = defaultDeck;
         } else {
             console.log(response);
-            toast.error('덱 목록을 불러오던 중 서버 오류가 발생하였습니다. 새로고침을 진행해주세요.');
+            toast.error('후보를 불러오던 중 서버 오류가 발생하였습니다. 새로고침을 진행해주세요.');
         }
     } catch (error) {
         console.log(error);
-        toast.error('덱 목록을 불러오던 중 오류가 발생하였습니다. 새로고침을 진행해주세요.');
+        toast.error('후보를 불러오던 중 오류가 발생하였습니다. 새로고침을 진행해주세요.');
     }
 });
 </script>
 
 <template>
-    <div class="deck-search-container">
+    <div class="user-search-container">
         <table>
             <colgroup>
                 <col style="width: 25%"/>
@@ -101,10 +78,9 @@ onMounted(async () => {
                     </td>
                 </tr>
                 <tr>
-                    <th>덱 지정</th>
-                    <td class="deck-pick">
-                        <NationSelect :on-select-nation="onSelectNation" />
-                        <DeckSelect :deck="deck" :deckList="deckList" :on-select-deck="onSelectDeck" />
+                    <th>유저 지정</th>
+                    <td class="user-pick">
+                        <FighterSelect :fighter="fighter" :fighter-list="fighterList" :on-select-fighter="onSelectFighter" />
                     </td>
                 </tr>
             </tbody>
@@ -116,7 +92,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.deck-search-container {
+.user-search-container {
     margin: 1vh 1vw;
     display: flex;
     flex-direction: column;
@@ -165,7 +141,7 @@ onMounted(async () => {
         }
     }
 
-    .deck-pick {
+    .user-pick {
         position: relative;
         height: 3rem;
         display: flex;

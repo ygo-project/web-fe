@@ -19,12 +19,12 @@ const themeModeStore = {
 			document.documentElement.setAttribute('data-theme', 'light');
 		},
 		MUT_AUTH: (state, payload) => {
-			if (payload) {
+			if (payload && payload !== 'LOGOUT') {
 				state.auth = payload ? payload === 'ADMIN' ? 2 : 1 : 0;
 				localStorage.setItem('userAuth', payload);
 			} else {
 				localStorage.removeItem('userAuth');
-				state.auth = undefined;
+				state.auth = 0;
 			}
 		}
 	},
