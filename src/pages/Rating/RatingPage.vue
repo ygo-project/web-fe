@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useStore } from "vuex";
 import { toast } from "vue3-toastify";
 
 import YgoButton from "@/components/atom/YgoButton.vue";
@@ -7,6 +8,10 @@ import DeckSearch from "@/pages/Rating/search/DeckSearch.vue";
 import UserSearch from "@/pages/Rating/search/UserSearch.vue";
 import Paging from "@/components/molecule/Paging/Paging.vue";
 import { apiClient } from "@/common/index.js";
+
+const store = useStore();
+
+const auth = computed(() => store.getters.GET_AUTH );
 
 const deckActive = ref(true);
 const userActive = ref(false);
@@ -103,7 +108,7 @@ const searchUserLog = async () => {
     <div class="rating-container">
         <div class="tab-area">
             <YgoButton @click="deckActive = true; userActive = false;" :class="{ active: deckActive }">덱</YgoButton>
-            <YgoButton @click="userActive = true; deckActive = false;" :class="{ active: userActive }">유저</YgoButton>
+            <YgoButton v-if="auth > 0" @click="userActive = true; deckActive = false;" :class="{ active: userActive }">유저</YgoButton>
         </div>
         <div class="tab-content-area" v-if="deckActive">
             <div class="search-area">
