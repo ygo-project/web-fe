@@ -1,5 +1,6 @@
 <script setup>
 import Guard from "@/pages/Fight/FightBoard/FightField/Guard.vue";
+import EnergyCounter from "@/pages/Fight/FightBoard/FightField/EnergyCounter.vue";
 
 const props = defineProps({
     fightPoints: Array,
@@ -11,8 +12,16 @@ const props = defineProps({
 
 <template>
     <div class="field-container">
-        <Guard v-for="(item, idx) in fightPoints" @click="setPower(idx)" :isVanguard="isUpSideDown ? idx === 2 : idx === 3"
-            :critical-point="criticalPoints[idx]">{{ item }}</Guard>
+        <div v-if="!isUpSideDown">
+            <EnergyCounter />
+        </div>
+        <div class="guard-container">
+            <Guard v-for="(item, idx) in fightPoints" @click="setPower(idx)" :isVanguard="isUpSideDown ? idx === 2 : idx === 3"
+                   :critical-point="criticalPoints[idx]">{{ item }}</Guard>
+        </div>
+        <div v-if="isUpSideDown" class="energy-container">
+            <EnergyCounter />
+        </div>
     </div>
 </template>
 
@@ -20,7 +29,12 @@ const props = defineProps({
     .field-container {
         display: flex;
         flex-direction: row;
-        justify-content: center;
-        flex-wrap: wrap;
+
+        .guard-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
     }
 </style>
