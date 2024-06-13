@@ -5,9 +5,19 @@ import EnergyCounter from "@/pages/Fight/FightBoard/FightField/EnergyCounter.vue
 const props = defineProps({
     fightPoints: Array,
     criticalPoints: Array,
-    setPower: Function,
+    drivePoints: Array,
+    selectedCircle: Array,
+    selectCircle: Function,
     isUpSideDown: Boolean,
 });
+
+const removeCritical = (idx) => {
+    props.criticalPoints[idx] -= 1;
+}
+
+const removeDrive = (idx) => {
+    props.drivePoints[idx] -= 1;
+}
 </script>
 
 <template>
@@ -16,8 +26,12 @@ const props = defineProps({
             <EnergyCounter />
         </div>
         <div class="guard-container">
-            <Guard v-for="(item, idx) in fightPoints" @click="setPower(idx)" :isVanguard="isUpSideDown ? idx === 2 : idx === 3"
-                   :critical-point="criticalPoints[idx]">{{ item }}</Guard>
+            <Guard v-for="(item, idx) in fightPoints" @click="() => { selectCircle(idx); }" :isVanguard="isUpSideDown ? idx === 2 : idx === 3"
+                   :class="{ active: selectedCircle.indexOf(idx) >= 0 }" :critical-point="criticalPoints[idx]" :drive-point="drivePoints[idx]"
+                   :remove-critical="() => removeCritical(idx)" :remove-drive="() => removeDrive(idx)"
+            >
+                {{ item }}
+            </Guard>
         </div>
         <div v-if="isUpSideDown" class="energy-container">
             <EnergyCounter />
@@ -35,6 +49,10 @@ const props = defineProps({
             flex-direction: row;
             justify-content: center;
             flex-wrap: wrap;
+
+            .active:before {
+                opacity: 0.8;
+            }
         }
     }
 </style>

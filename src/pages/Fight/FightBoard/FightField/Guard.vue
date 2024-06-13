@@ -2,6 +2,9 @@
 const props = defineProps({
     isVanguard: Boolean,
     criticalPoint: Number,
+    drivePoint: Number,
+    removeCritical: Function,
+    removeDrive: Function,
 });
 </script>
 
@@ -11,7 +14,12 @@ const props = defineProps({
             <slot />
         </strong>
         <div class="critical">
-            <div v-for="index in criticalPoint"/>
+            <div v-for="index in criticalPoint" @click.capture.stop="removeCritical" />
+        </div>
+        <div class="drive" v-if="drivePoint > 0" @click.capture.stop="removeDrive" >
+<!--            <div />-->
+            <span>Drive</span>
+            <strong>＋{{ drivePoint }}</strong>
         </div>
     </div>
 </template>
@@ -40,12 +48,44 @@ const props = defineProps({
             left: 100%;
 
             div {
-                height: 1vw;
-                width: 1vw;
+                height: 2rem;
+                width: 2rem;
                 background: var(--bg-element2) url("@/assets/imgs/critical-symbol.jpeg") center center;
                 background-size: cover;
                 border-radius: 1rem;
                 opacity: 0.8;
+
+                cursor: pointer;
+            }
+        }
+
+        .drive {
+            position: absolute;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            bottom: 0;
+            left: 100%;
+
+            color: #005cc5 !important;
+            cursor: pointer;
+
+            div {
+                display: inline-block;
+                height: 2rem;
+                width: 2rem;
+                background: var(--bg-element2) url("@/assets/imgs/drive-symbol.png") center center;
+                background-size: cover;
+                border-radius: 1rem;
+                opacity: 0.8;
+            }
+
+            span {
+                white-space: nowrap;
+            }
+
+            strong {
+                white-space: nowrap;
             }
         }
     }

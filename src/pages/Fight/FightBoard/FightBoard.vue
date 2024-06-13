@@ -8,168 +8,231 @@ const props = defineProps({
     fightPointDisplay: Array,
     fightPointReal: Array,
     criticalPoints: Array,
-    log: Array,
+    drivePoints: Array,
     isUpSideDown: Boolean,
 });
 
-const amount = ref(5000);
-const isOverTrigger = ref(false);
-const isFrontTrigger = ref(false);
-const isCriticalTrigger = ref(false);
-const isCancel = ref(false);
+const selectedCircle = ref([]);
 
 const increaseAmount = () => {
-    amount.value = amount.value + 1000;
+    selectedCircle.value.forEach((value, index, array) => {
+        const now = props.fightPointReal[value];
+        const pur = now + 1000;
+        props.fightPointReal[value] = pur;
+
+        const diff = Math.ceil((pur - now) / 21);
+        let time = 0;
+        for (let start = now; start !== pur; start += diff) {
+            setTimeout(() => {
+                props.fightPointDisplay[value] = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            time++;
+        }
+    });
 }
 
 const decreaseAmount = () => {
-    if (amount.value > 0) {
-        amount.value = amount.value - 1000;
-    }
+    selectedCircle.value.forEach((value, index, array) => {
+        const now = props.fightPointReal[value];
+        const pur = now - 1000;
+        props.fightPointReal[value] = pur;
+
+        const diff = Math.ceil((pur - now) / 21);
+        let time = 0;
+        for (let start = now; start !== pur; start += diff) {
+            setTimeout(() => {
+                props.fightPointDisplay[value] = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            time++;
+        }
+    });
 }
 
 const increaseLarge = () => {
-    amount.value = amount.value + 5000;
+    selectedCircle.value.forEach((value, index, array) => {
+        const now = props.fightPointReal[value];
+        const pur = now + 5000;
+        props.fightPointReal[value] = pur;
+
+        const diff = Math.ceil((pur - now) / 21);
+        let time = 0;
+        for (let start = now; start !== pur; start += diff) {
+            setTimeout(() => {
+                props.fightPointDisplay[value] = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            time++;
+        }
+    });
 }
 
 const decreaseLarge = () => {
-    if (amount.value >= 5000) {
-        amount.value = amount.value - 5000;
-    }
-}
+    selectedCircle.value.forEach((value, index, array) => {
+        const now = props.fightPointReal[value];
+        const pur = now - 5000;
+        props.fightPointReal[value] = pur;
 
-const setPower = (idx) => {
-    if (isCriticalTrigger.value) {
-        isCriticalTrigger.value = false;
-        // 크리티컬 + 1
-        props.criticalPoints[idx] += 1;
-        props.log.push({
-            idx: idx,
-            trigger: 'critical',
-            amount: 1,
-        });
-        return;
-    }
-
-    const now = props.fightPointReal[idx];
-    const pur = now + amount.value;
-    props.fightPointReal[idx] = pur;
-
-    if (!isCancel.value && !isFrontTrigger.value) {
-        props.log.push({
-            idx: idx,
-            trigger: 'power',
-            amount: amount.value,
-        });
-    }
-
-    const diff = Math.ceil((pur - now) / 21);
-    let time = 0;
-    for (let start = now; start !== pur; start += diff) {
-        setTimeout(() => {
-            props.fightPointDisplay[idx] = start;
-        }, 20 * time);
-
-        if (diff > 0 && start + diff > pur) {
-            start = pur - diff;
+        const diff = Math.ceil((pur - now) / 21);
+        let time = 0;
+        for (let start = now; start !== pur; start += diff) {
             setTimeout(() => {
-                props.fightPointDisplay[idx] = pur;
-            }, 20 * (time + 1));
+                props.fightPointDisplay[value] = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            time++;
         }
-
-        if (diff < 0 && start + diff < pur) {
-            start = pur - diff;
-            setTimeout(() => {
-                props.fightPointDisplay[idx] = pur;
-            }, 20 * (time + 1));
-        }
-
-        time++;
-    }
-
-    if (isOverTrigger.value) {
-        isOverTrigger.value = false;
-        amount.value = 5000;
-    }
-}
-
-const setFrontPower = () => {
-    isOverTrigger.value = false;
-    isCriticalTrigger.value = false;
-    isFrontTrigger.value = true;
-
-    if (props.isUpSideDown) {
-        setPower(0);
-        setPower(2);
-        setPower(4);
-    } else {
-        setPower(1);
-        setPower(3);
-        setPower(5);
-    }
-
-    props.log.push({
-        idx: props.isUpSideDown ? 1 : -1,
-        trigger: 'front',
-        amount: amount.value,
     });
-    isFrontTrigger.value = false;
 }
 
-const setOverTrigger = () => {
-    amount.value = 100000000;
-    isFrontTrigger.value = false;
-    isCriticalTrigger.value = false;
+const increaseOver = () => {
+    selectedCircle.value.forEach((value, index, array) => {
+        const now = props.fightPointReal[value];
+        const pur = now + 100000000;
+        props.fightPointReal[value] = pur;
 
-    isOverTrigger.value = true;
+        const diff = Math.ceil((pur - now) / 21);
+        let time = 0;
+        for (let start = now; start !== pur; start += diff) {
+            setTimeout(() => {
+                props.fightPointDisplay[value] = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            time++;
+        }
+    });
+}
+
+const decreaseOver = () => {
+    selectedCircle.value.forEach((value, index, array) => {
+        const now = props.fightPointReal[value];
+        const pur = now - 100000000;
+        props.fightPointReal[value] = pur;
+
+        const diff = Math.ceil((pur - now) / 21);
+        let time = 0;
+        for (let start = now; start !== pur; start += diff) {
+            setTimeout(() => {
+                props.fightPointDisplay[value] = start;
+            }, 20 * time);
+
+            if (diff > 0 && start + diff > pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            if (diff < 0 && start + diff < pur) {
+                start = pur - diff;
+                setTimeout(() => {
+                    props.fightPointDisplay[value] = pur;
+                }, 20 * (time + 1));
+            }
+
+            time++;
+        }
+    });
+}
+
+const selectCircle = (idx) => {
+    if (selectedCircle.value.indexOf(idx) < 0) {
+        selectedCircle.value.push(idx);
+    } else {
+        selectedCircle.value = selectedCircle.value.filter((i) => i !== idx);
+    }
 }
 
 const setCriticalTrigger = () => {
-    amount.value = 10000;
-    isFrontTrigger.value = false;
-    isOverTrigger.value = false;
-
-    isCriticalTrigger.value = true;
+    selectedCircle.value.forEach((value, index, array) => {
+        props.criticalPoints[value] += 1;
+    });
 }
 
-const cancelLastSetting = () => {
-    if (props.log.length === 0) return;
-
-    let lastLog = props.log.pop(); // idx, trigger, amount
-
-    if (lastLog.trigger === 'front') {
-        let tmp = amount.value;
-        isCancel.value = true;
-        amount.value = -1 * lastLog.amount;
-        if (lastLog.idx > 0) {
-            setPower(0);
-            setPower(2);
-            setPower(4);
-        } else {
-            setPower(1);
-            setPower(3);
-            setPower(5);
-        }
-        amount.value = tmp;
-        isCancel.value = false;
-    } else if (lastLog.trigger === 'critical'){
-        props.criticalPoints[lastLog.idx] -= 1;
-    } else {
-        let tmp = amount.value;
-        isCancel.value = true;
-        amount.value = -1 * lastLog.amount;
-        setPower(lastLog.idx);
-        amount.value = tmp;
-        isCancel.value = false;
-    }
+const setDrive = () => {
+    selectedCircle.value.forEach((value, index, array) => {
+        props.drivePoints[value] += 1;
+    });
 }
 </script>
 
 <template>
     <div class="board-container">
-        <FightField :fight-points="props.fightPointDisplay" :set-power="setPower" :is-up-side-down="isUpSideDown" :critical-points="criticalPoints" />
-        <FightKeyboard :amount="amount" :up="increaseAmount" :down="decreaseAmount" :large-up="increaseLarge" :large-down="decreaseLarge"
-                       :front="setFrontPower" :over="setOverTrigger" :critical="setCriticalTrigger" :cancel="cancelLastSetting" />
+        <FightField :fight-points="props.fightPointDisplay" :critical-points="criticalPoints" :drive-points="drivePoints"
+                    :select-circle="selectCircle" :selected-circle="selectedCircle" :is-up-side-down="isUpSideDown" />
+        <FightKeyboard :up="increaseAmount" :down="decreaseAmount" :large-up="increaseLarge" :large-down="decreaseLarge"
+                       :over-up="increaseOver" :over-down="decreaseOver" :critical="setCriticalTrigger" :drive="setDrive" />
     </div>
 </template>
 
