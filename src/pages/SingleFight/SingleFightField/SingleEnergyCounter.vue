@@ -45,7 +45,7 @@ const down = () => {
             }
 
             .active {
-                background-color: var(--text1);
+                background-color: var(--prism-code-4);
             }
         }
     }
