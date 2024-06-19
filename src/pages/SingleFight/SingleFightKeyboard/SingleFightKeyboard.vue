@@ -8,8 +8,10 @@ const props = defineProps({
     largeDown: Function,
     overUp: Function,
     overDown: Function,
-    critical: Function,
-    drive: Function,
+    upCritical: Function,
+    downCritical: Function,
+    upDrive: Function,
+    downDrive: Function,
     deselect: Function,
     end: Function,
 });
@@ -26,8 +28,16 @@ const props = defineProps({
             <YgoButton color="darkgray" :click-event="overDown">－over</YgoButton>
         </div>
         <div class="ability-wrapper">
-            <YgoButton color="darkgray" :click-event="critical">크리티컬 ＋ 1</YgoButton>
-            <YgoButton color="darkgray" :click-event="drive">드라이브 ＋ 1</YgoButton>
+            <div>
+                <strong>Critical</strong>
+                <YgoButton color="darkgray" :click-event="upCritical">＋1</YgoButton>
+                <YgoButton color="darkgray" :click-event="downCritical">－1</YgoButton>
+            </div>
+            <div>
+                <strong>Drive</strong>
+                <YgoButton color="darkgray" :click-event="upDrive">＋1</YgoButton>
+                <YgoButton color="darkgray" :click-event="downDrive">－1</YgoButton>
+            </div>
         </div>
         <div class="utility-wrapper">
             <YgoButton color="darkgray" :click-event="deselect">선택해제</YgoButton>
@@ -63,9 +73,24 @@ const props = defineProps({
             flex-direction: column;
             align-items: center;
             margin-bottom: 1rem;
+            width: 90%;
 
             button {
+                padding: 0 10px;
                 margin-bottom: 3px;
+                margin-left: 3px;
+            }
+
+            div {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                width: 100%;
+
+                * {
+                    width: 33%;
+                    flex-grow: 1;
+                }
             }
         }
 

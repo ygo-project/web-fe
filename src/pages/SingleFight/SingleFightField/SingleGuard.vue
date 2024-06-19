@@ -3,8 +3,6 @@ const props = defineProps({
     isVanguard: Boolean,
     criticalPoint: Number,
     drivePoint: Number,
-    removeCritical: Function,
-    removeDrive: Function,
 });
 </script>
 
@@ -13,13 +11,15 @@ const props = defineProps({
         <strong>
             <slot />
         </strong>
-        <div class="critical">
-            <div v-for="index in criticalPoint" @click.capture.stop="removeCritical" />
-        </div>
-        <div class="drive" v-if="drivePoint > 0" @click.capture.stop="removeDrive" >
-            <!--            <div />-->
-            <span>Drive</span>
-            <strong>＋{{ drivePoint }}</strong>
+        <div class="ability">
+            <div class="critical" v-if="criticalPoint !== 0">
+                <span>Critical</span>
+                <strong>{{ (criticalPoint > 0 ? '＋' : '－') + Math.abs(criticalPoint) }}</strong>
+            </div>
+            <div class="drive" v-if="drivePoint !== 0">
+                <span>Drive</span>
+                <strong>{{ (drivePoint > 0 ? '＋' : '－') + Math.abs(drivePoint) }}</strong>
+            </div>
         </div>
     </div>
 </template>
@@ -31,61 +31,49 @@ const props = defineProps({
     align-items: center;
     justify-content: center;
 
-    height: 12vw;
-    width: 12vw;
-    margin: 1% 8%;
+    height: 10vw;
+    width: 10vw;
+    margin: 1% 7% auto 7%;
 
     strong {
         color: var(--text1);
-        font-size: 1.3rem;
     }
 
-    .critical {
+    .ability {
         position: absolute;
         display: flex;
-        flex-direction: row;
-        top: 0;
-        left: 100%;
+        flex-direction: column;
+        top: 100%;
+        left: 0;
 
-        div {
-            height: 2rem;
-            width: 2rem;
-            background: var(--bg-element2) url("@/assets/imgs/critical-symbol.jpeg") center center;
-            background-size: cover;
-            border-radius: 1rem;
-            opacity: 0.8;
+        .critical {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            color: #ca8a04 !important;
 
-            cursor: pointer;
-        }
-    }
+            span {
+                white-space: nowrap;
+            }
 
-    .drive {
-        position: absolute;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        bottom: 0;
-        left: 100%;
-
-        color: #005cc5 !important;
-        cursor: pointer;
-
-        div {
-            display: inline-block;
-            height: 2rem;
-            width: 2rem;
-            background: var(--bg-element2) url("@/assets/imgs/drive-symbol.png") center center;
-            background-size: cover;
-            border-radius: 1rem;
-            opacity: 0.8;
+            strong {
+                white-space: nowrap;
+            }
         }
 
-        span {
-            white-space: nowrap;
-        }
+        .drive {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            color: #005cc5 !important;
 
-        strong {
-            white-space: nowrap;
+            span {
+                white-space: nowrap;
+            }
+
+            strong {
+                white-space: nowrap;
+            }
         }
     }
 }

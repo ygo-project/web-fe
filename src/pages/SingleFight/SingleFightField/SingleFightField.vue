@@ -10,14 +10,6 @@ const props = defineProps({
     selectedCircle: Array,
     selectCircle: Function,
 })
-
-const removeCritical = (idx) => {
-    props.critical[idx] -= 1;
-}
-
-const removeDrive = (idx) => {
-    props.drive[idx] -= 1;
-}
 </script>
 
 <template>
@@ -26,10 +18,8 @@ const removeDrive = (idx) => {
             <SingleEnergyCounter />
         </div>
         <div class="guard-container">
-            <SingleGuard v-for="(item, idx) in power" @click="() => { selectCircle(idx); }" :is-vanguard="idx === 3"
-                         :class="{ active: selectedCircle.indexOf(idx) >= 0 }" :critical-point="critical[idx]" :drive-point="drive[idx]"
-                         :remove-critical="() => removeCritical(idx)" :remove-drive="() => removeDrive(idx)"
-            >
+            <SingleGuard v-for="(item, idx) in power" @click="() => { selectCircle(idx); }" :is-vanguard="idx === 1"
+                         :class="{ active: selectedCircle.indexOf(idx) >= 0 }" :critical-point="critical[idx]" :drive-point="drive[idx]" >
                 {{ item }}
             </SingleGuard>
         </div>

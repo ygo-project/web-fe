@@ -212,15 +212,27 @@ const selectCircle = (idx) => {
     }
 }
 
-const setCriticalTrigger = () => {
+const increaseCritical = () => {
     selectedCircle.value.forEach((value, index, array) => {
         criticalCounter.value[value] += 1;
     });
 }
 
-const setDrive = () => {
+const decreaseCritical = () => {
+    selectedCircle.value.forEach((value, index, array) => {
+        criticalCounter.value[value] -= 1;
+    });
+}
+
+const increaseDrive = () => {
     selectedCircle.value.forEach((value, index, array) => {
         driveCounter.value[value] += 1;
+    });
+}
+
+const decreaseDrive = () => {
+    selectedCircle.value.forEach((value, index, array) => {
+        driveCounter.value[value] -= 1;
     });
 }
 
@@ -239,8 +251,8 @@ const turnEnd = () => {
 <template>
     <div class="single-fight-container">
         <SingleFightKeyboard :up="increaseAmount" :down="decreaseAmount" :large-up="increaseLarge" :large-down="decreaseLarge"
-                             :over-up="increaseOver" :over-down="decreaseOver" :critical="setCriticalTrigger" :drive="setDrive"
-                             :deselect="deselect" :end="turnEnd" />
+                             :up-critical="increaseCritical" :down-critical="decreaseCritical" :up-drive="increaseDrive" :down-drive="decreaseDrive"
+                             :over-up="increaseOver" :over-down="decreaseOver" :deselect="deselect" :end="turnEnd" />
         <SingleFightField :power="powerCounter" :energy="energyCounter" :critical="criticalCounter" :drive="driveCounter"
                         :selected-circle="selectedCircle" :select-circle="selectCircle"/>
     </div>
@@ -254,11 +266,11 @@ const turnEnd = () => {
         margin: 0 auto;
 
         >div {
-            width: 30%;
+            width: 25%;
         }
 
         >div + div {
-            width: 70%;
+            width: 75%;
         }
     }
 </style>
