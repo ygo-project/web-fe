@@ -14,8 +14,8 @@ const auth = computed(() => store.getters.GET_AUTH );
 <!--        <router-link class="menu" to="/duel">듀얼</router-link>-->
         <router-link class="menu" to="/fight">파이트(2p)</router-link>
         <router-link class="menu" to="/singleFight">파이트(1p)</router-link>
-        <router-link v-if="auth > 0" class="menu" to="/candidate">유저등록</router-link>
-        <router-link v-if="auth > 0" class="menu" to="/league">대진표</router-link>
+        <router-link v-if="auth > 1" class="menu" to="/candidate">유저등록</router-link>
+        <router-link v-if="auth > 1" class="menu" to="/league">대진표</router-link>
         <router-link class="menu" to="/rating">전적</router-link>
     </div>
 </template>
