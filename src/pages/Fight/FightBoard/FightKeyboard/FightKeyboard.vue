@@ -40,6 +40,12 @@ const props = defineProps({
             margin: 0 auto;
         }
 
+        button {
+            padding: 0 1rem;
+            margin-top: 2px;
+            margin-left: 2px;
+        }
+
         .amount-wrapper {
             display: flex;
             flex-direction: column;
@@ -50,19 +56,11 @@ const props = defineProps({
             svg {
                 height: 25px;
             }
-
-            button {
-                margin-top: 2px;
-                margin-left: 2px;
-            }
         }
 
         .btn-wrapper {
-            button {
-                width: 140px;
-                margin-top: 2px;
-                margin-left: 2px;
-            }
+            display: flex;
+            flex-direction: column;
         }
     }
 </style>

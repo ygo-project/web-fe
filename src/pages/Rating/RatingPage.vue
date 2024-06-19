@@ -108,7 +108,7 @@ const searchUserLog = async () => {
     <div class="rating-container">
         <div class="tab-area">
             <YgoButton @click="deckActive = true; userActive = false;" :class="{ active: deckActive }">덱</YgoButton>
-            <YgoButton v-if="auth > 0" @click="userActive = true; deckActive = false;" :class="{ active: userActive }">유저</YgoButton>
+            <YgoButton v-if="auth > 1" @click="userActive = true; deckActive = false;" :class="{ active: userActive }">유저</YgoButton>
         </div>
         <div class="tab-content-area" v-if="deckActive">
             <div class="search-area">
