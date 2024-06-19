@@ -17,6 +17,11 @@ const routes = [
 		component: () => import("@/pages/Fight/FightPage.vue")
 	},
 	{
+		path: '/singleFight',
+		name: 'singleFight',
+		component: () => import("@/pages/SingleFight/SingleFightPage.vue")
+	},
+	{
 		path: '/rating',
 		name: 'rating',
 		component: () => import("@/pages/Rating/RatingPage.vue")

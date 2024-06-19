@@ -1,8 +1,5 @@
 <script setup>
 import YgoButton from "@/components/atom/YgoButton.vue";
-import IconBase from "@/components/atom/IconBase.vue";
-import ChevronUp from "@/assets/svgs/ChevronUp.vue";
-import ChevronDown from "@/assets/svgs/ChevronDown.vue";
 
 const props = defineProps({
     up: Function,
